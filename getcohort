@@ -1,0 +1,472 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.0
+-- Dumped by pg_dump version 9.6.0
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    first_name character varying,
+    last_name character varying,
+    email character varying,
+    web_page character varying,
+    github character varying,
+    current_location character varying,
+    avatar bytea,
+    available_for_work boolean,
+    bio character varying
+);
+
+
+ALTER TABLE users OWNER TO "Kevin";
+
+--
+-- Name: Users_id_seq; Type: SEQUENCE; Schema: public; Owner: Kevin
+--
+
+CREATE SEQUENCE "Users_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Users_id_seq" OWNER TO "Kevin";
+
+--
+-- Name: Users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Kevin
+--
+
+ALTER SEQUENCE "Users_id_seq" OWNED BY users.id;
+
+
+--
+-- Name: cohort; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE cohort (
+    id integer NOT NULL,
+    name character varying,
+    start_date date,
+    end_date date,
+    location character varying
+);
+
+
+ALTER TABLE cohort OWNER TO "Kevin";
+
+--
+-- Name: cohort_id_seq; Type: SEQUENCE; Schema: public; Owner: Kevin
+--
+
+CREATE SEQUENCE cohort_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE cohort_id_seq OWNER TO "Kevin";
+
+--
+-- Name: cohort_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Kevin
+--
+
+ALTER SEQUENCE cohort_id_seq OWNED BY cohort.id;
+
+
+--
+-- Name: company; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE company (
+    id integer NOT NULL,
+    name character varying
+);
+
+
+ALTER TABLE company OWNER TO "Kevin";
+
+--
+-- Name: company_id_seq; Type: SEQUENCE; Schema: public; Owner: Kevin
+--
+
+CREATE SEQUENCE company_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE company_id_seq OWNER TO "Kevin";
+
+--
+-- Name: company_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Kevin
+--
+
+ALTER SEQUENCE company_id_seq OWNED BY company.id;
+
+
+--
+-- Name: user_type; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE user_type (
+    id integer NOT NULL,
+    type character varying
+);
+
+
+ALTER TABLE user_type OWNER TO "Kevin";
+
+--
+-- Name: user_type_id_seq; Type: SEQUENCE; Schema: public; Owner: Kevin
+--
+
+CREATE SEQUENCE user_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_type_id_seq OWNER TO "Kevin";
+
+--
+-- Name: user_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Kevin
+--
+
+ALTER SEQUENCE user_type_id_seq OWNED BY user_type.id;
+
+
+--
+-- Name: users_link_cohort; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE users_link_cohort (
+    user_id integer,
+    cohort_id integer
+);
+
+
+ALTER TABLE users_link_cohort OWNER TO "Kevin";
+
+--
+-- Name: users_link_company; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE users_link_company (
+    user_id integer,
+    company_id integer
+);
+
+
+ALTER TABLE users_link_company OWNER TO "Kevin";
+
+--
+-- Name: users_link_type; Type: TABLE; Schema: public; Owner: Kevin
+--
+
+CREATE TABLE users_link_type (
+    user_id integer,
+    user_type_id integer
+);
+
+
+ALTER TABLE users_link_type OWNER TO "Kevin";
+
+--
+-- Name: cohort id; Type: DEFAULT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY cohort ALTER COLUMN id SET DEFAULT nextval('cohort_id_seq'::regclass);
+
+
+--
+-- Name: company id; Type: DEFAULT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY company ALTER COLUMN id SET DEFAULT nextval('company_id_seq'::regclass);
+
+
+--
+-- Name: user_type id; Type: DEFAULT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY user_type ALTER COLUMN id SET DEFAULT nextval('user_type_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('"Users_id_seq"'::regclass);
+
+
+--
+-- Name: Users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Kevin
+--
+
+SELECT pg_catalog.setval('"Users_id_seq"', 8, true);
+
+
+--
+-- Data for Name: cohort; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY cohort (id, name, start_date, end_date, location) FROM stdin;
+1	April 2016	2016-04-01	2016-08-01	Atlanta, GA
+2	July 2016	2016-07-11	2016-11-02	Atlanta, GA
+3	September 2016	2016-09-12	2017-01-06	Atlanta, GA
+4	September 2016 Elective	2016-11-15	2016-12-20	Atlanta, GA
+\.
+
+
+--
+-- Name: cohort_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Kevin
+--
+
+SELECT pg_catalog.setval('cohort_id_seq', 4, true);
+
+
+--
+-- Data for Name: company; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY company (id, name) FROM stdin;
+1	Business, Inc.
+\.
+
+
+--
+-- Name: company_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Kevin
+--
+
+SELECT pg_catalog.setval('company_id_seq', 1, true);
+
+
+--
+-- Data for Name: user_type; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY user_type (id, type) FROM stdin;
+1	Student
+2	Instructor
+3	Admin
+4	Alumnus
+5	Employer
+\.
+
+
+--
+-- Name: user_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Kevin
+--
+
+SELECT pg_catalog.setval('user_type_id_seq', 5, true);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY users (id, first_name, last_name, email, web_page, github, current_location, avatar, available_for_work, bio) FROM stdin;
+1	Kevin	Farmer	farmekp0@sewanee.edu	reddit.com	/KFarm93	Atlanta, GA	\N	t	Hi!
+2	Matthew	Downs	mwdowns@gmail.com	mwdowns.com	/mwdowns	Atlanta, GA	\N	t	Cool dude!
+3	Trista	McCleary	trista_mccleary@yahoo.com	trista.com	/mccleary	Atlanta, GA	\N	t	what's up?!
+4	Juan	Cortes	juan.cortes@gmail.com	jcortes0309@github.io	/jcortes0309	Atlanta, GA	\N	t	Que tal amigos?
+5	Toby	Ho	tobyho@gmail.com	tobyho.com	/airportyh	Atlanta, GA	\N	f	Debugging! Yay!
+6	Max	McChesney	max@gmail.com	max.com	/max	Atlanta, GA	\N	f	lmkadnsjfbhdfjsn
+7	DeAnn	Kendrick	deann@gmail.com	deann.com	/deann	Atlanta, GA	\N	t	ertyui
+8	Mr.	Businessman	business@gmail.com	business.com	/biz	Atlanta, GA	\N	\N	I do business!
+\.
+
+
+--
+-- Data for Name: users_link_cohort; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY users_link_cohort (user_id, cohort_id) FROM stdin;
+1	3
+1	4
+3	4
+3	3
+2	3
+4	3
+5	3
+5	1
+7	3
+7	1
+\.
+
+
+--
+-- Data for Name: users_link_company; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY users_link_company (user_id, company_id) FROM stdin;
+8	1
+\.
+
+
+--
+-- Data for Name: users_link_type; Type: TABLE DATA; Schema: public; Owner: Kevin
+--
+
+COPY users_link_type (user_id, user_type_id) FROM stdin;
+1	1
+4	1
+3	1
+2	1
+7	2
+7	4
+5	2
+6	3
+\.
+
+
+--
+-- Name: users Users_email_key; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT "Users_email_key" UNIQUE (email);
+
+
+--
+-- Name: users Users_github_key; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT "Users_github_key" UNIQUE (github);
+
+
+--
+-- Name: users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT "Users_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: users Users_web_page_key; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT "Users_web_page_key" UNIQUE (web_page);
+
+
+--
+-- Name: cohort cohort_pkey; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY cohort
+    ADD CONSTRAINT cohort_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: company company_pkey; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY company
+    ADD CONSTRAINT company_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_type user_type_pkey; Type: CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY user_type
+    ADD CONSTRAINT user_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_link_company user_link_company_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_company
+    ADD CONSTRAINT user_link_company_company_id_fkey FOREIGN KEY (company_id) REFERENCES company(id);
+
+
+--
+-- Name: users_link_company user_link_company_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_company
+    ADD CONSTRAINT user_link_company_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: users_link_cohort users_link_cohort_cohort_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_cohort
+    ADD CONSTRAINT users_link_cohort_cohort_id_fkey FOREIGN KEY (cohort_id) REFERENCES cohort(id);
+
+
+--
+-- Name: users_link_cohort users_link_cohort_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_cohort
+    ADD CONSTRAINT users_link_cohort_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: users_link_type users_link_type_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_type
+    ADD CONSTRAINT users_link_type_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: users_link_type users_link_type_user_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Kevin
+--
+
+ALTER TABLE ONLY users_link_type
+    ADD CONSTRAINT users_link_type_user_type_id_fkey FOREIGN KEY (user_type_id) REFERENCES user_type(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

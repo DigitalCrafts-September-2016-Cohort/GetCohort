@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<table>
+  <tr>
+    <th>
+      Name
+    </th>
+
+  </tr>
+{% for item in query %}
+  <tr>
+    <td>
+      {{item.first_name}} {{item.last_name}}
+    </td>
+  </tr>
+
+{% endfor %}
+
+</table>
+{% endblock %}
