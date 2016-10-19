@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+<p>Hello, citizen. Who would you like to add?</p>
+<form class="" action="/add_entry" method="post">
+  <label for="">First Name:</label>
+  <input type="text" name="first_name" value="">
+  <br>
+  <br>
+  <label for="">Last Name:</label>
+  <input type="text" name="last_name" value="">
+  <br>
+  <br>
+  <label for="">Email</label>
+  <input type="text" name="email" value="">
+  <br>
+  <br>
+  <label for="">Web Page:</label>
+  <input type="text" name="web_page" value="">
+  <br>
+  <br>
+  <label for="">GitHub:</label>
+  <input type="text" name="github" value="">
+  <br>
+  <br>
+  <label for="">Current Location:</label>
+  <input type="text" name="current_location" value="">
+  <br>
+  <br>
+  <label for="">Short Bio:</label>
+  <textarea name="bio" rows="8" cols="40"></textarea>
+  <br>
+  <br>
+  <label for="">Available for Work?</label>
+  <input type="radio" name="available_for_work" value="TRUE">Yes?
+  <input type="radio" name="available_for_work" value="FALSE">No?<br>
+  <br>
+  <br>
+  <label for=""></label>
+  <br>
+  <br>
+  <label for="">Which Cohort?</label>
+  <select class="form-control" name="cohort">
+    <option value="cohort_id">April 2016</option>
+    <option value="cohort_id">July 2016</option>
+    <option value="cohort_id">September 2016</option>
+  </select>
+  <br>
+  <br>
+  <label for="">User Class?</label>
+  <select class="form-control" name="cohort">
+    <option value="user_type_id">Student</option>
+    <option value="user_type_id">Instructor</option>
+    <option value="user_type_id">Admin</option>
+  </select>
+  <br>
+  <br>
+  <button type="submit" name="button_create_entry">Create Entry</button>
+
+
+</form>
+
+
+{% endblock %}
