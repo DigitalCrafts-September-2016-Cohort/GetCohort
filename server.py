@@ -91,6 +91,46 @@ def student_profile(id):
         student = result_list[0]
     )
 
+@app.route("/delete", methods=["POST"])
+def delete():
+    id = request.form.get("id")
+    db.delete(
+        "users", {
+        "id": id
+        }
+    )
+    return redirect("/all_students")
+
+@app.route("/add")
+def add():
+    return render_template(
+        "add.html"
+    )
+
+@app.route("/add_entry", methods=["POST"])
+def add_entry():
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
+    email = request.form.get("email")
+    web_page = request.form.get("web_page")
+    github = request.form.get("github")
+    current_location = request.form.get("current_location")
+    available_for_work = request.form.get("available_for_work")
+    bio = request.form.get("bio")
+
+    db.insert (
+        "users",
+        first_name = first_name,
+        last_name = last_name,
+        email = email,
+        web_page = web_page,
+        github = github,
+        current_location = current_location,
+        available_for_work = available_for_work,
+        bio = bio
+    )
+    return redirect("/all_students")
+
 
 
 if __name__ == "__main__":
