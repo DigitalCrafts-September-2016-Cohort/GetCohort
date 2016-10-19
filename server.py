@@ -29,36 +29,28 @@ def home():
 
 @app.route('/all_students')
 def all_students():
-    query = db.query( '''
+    query = db.query('''
         select
-            users.id,
-            first_name,
-            last_name
+        	users.id,
+        	first_name,
+        	last_name,
+        	cohort.name
         from
-            users;
-    ''')
-    # query = db.query('''
-    #     select
-    #     	users.id,
-    #     	first_name,
-    #     	last_name,
-    #     	cohort.name
-    #     from
-    #     	users,
-    #     	users_link_cohort,
-    #     	cohort,
-    #     	users_link_type,
-    #     	user_type
-    #     where
-    #     	users.id = users_link_type.user_id and
-    #     	users_link_type.user_type_id = user_type.id and
-    #     	users.id = users_link_cohort.user_id and
-    #     	users_link_cohort.cohort_id = cohort.id and
-    #     	cohort.name = 'September 2016' and
-    #     	user_type.type = 'Student'
-    #     ;
-    # '''
-    # )
+        	users,
+        	users_link_cohort,
+        	cohort,
+        	users_link_type,
+        	user_type
+        where
+        	users.id = users_link_type.user_id and
+        	users_link_type.user_type_id = user_type.id and
+        	users.id = users_link_cohort.user_id and
+        	users_link_cohort.cohort_id = cohort.id and
+        	cohort.name = 'September 2016' and
+        	user_type.type = 'Student'
+        ;
+    '''
+    )
     result_list = query.namedresult()
     print result_list
     return render_template(
