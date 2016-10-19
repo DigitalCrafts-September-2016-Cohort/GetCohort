@@ -91,6 +91,16 @@ def student_profile(id):
         student = result_list[0]
     )
 
+@app.route("/delete", methods=["POST"])
+def delete():
+    id = request.form.get("id")
+    db.delete(
+        "users", {
+        "id": id
+        }
+    )
+    return redirect("/all_students")
+
 
 
 if __name__ == "__main__":
