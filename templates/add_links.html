@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+<form class="" action="/add_entry" method="post">
+  <label for="">Which Cohort?</label>
+  <input type="radio" name="cohort_id" value="1">April 2016<br>
+  <input type="radio" name="cohort_id" value="2">July 2016<br>
+  <input type="radio" name="cohort_id" value="3">September 2016<br>
+  <input type="radio" name="cohort_id" value="4">September 2016 Elective<br>
+  <br>
+  <br>
+  <label for="">User type?</label>
+  <input type="radio" name="user_type_id" value="1">Student<br>
+  <input type="radio" name="user_type_id" value="2">Instructor<br>
+  <input type="radio" name="user_type_id" value="3">Admin<br>
+  <input type="radio" name="user_type_id" value="4">Alumnus<br>
+  <input type="radio" name="user_type_id" value="5">Employer<br>
+  <br>
+  <br>
+  <button type="submit" name="button_create_entry">Create Entry</button>
+
+</form>
+
+
+{% endblock %}
