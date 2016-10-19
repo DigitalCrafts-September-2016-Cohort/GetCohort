@@ -16,6 +16,7 @@ tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask("Get Cohort", template_folder = tmp_dir)
 
 app.secret_key = os.environ.get("SECRET_KEY")
+print app.secret_key
 
 @app.route('/')
 def home():
@@ -127,6 +128,34 @@ def add_entry():
     )
     return redirect("/all_students")
 
+@app.route('/login')
+def display_login():
+    return render_template(
+        "login.html"
+    )
+
+
+@app.route("/submit_login", methods=["POST"])
+def submit_login():
+    email = request.form.get('email')
+    print email
+    password = request.form.get('password')
+    print password
+    query = db.query("select * from users where email = $1", email)
+    print "\n\n\nquery %s" % query
+
+    result_list = query.namedresult()
+    print "\n\n\nresult_list %s" % result_list
+
+    if len(result_list) > 0:
+        user = result_list[0]
+        if user.password == password:
+            session['email'] = user.email
+            return redirect('/')
+        else:
+            return redirect('/login')
+    else:
+        return redirect('/login')
 
 
 if __name__ == "__main__":
