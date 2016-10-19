@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 
 {% extends "layout.html" %}
-
+<form action="/search_user" method="POST">
+  <input type="text" name="search_bar" value="Search...">
+  <button type="submit" name="search_submit">Submit</button>
+</form>
 
 {% block body %}
+<form action="/search_user" method="POST">
+  <input type="text" name="search_bar" value="Search...">
+  <button type="submit" name="search_submit">Submit</button>
+</form>
+
 <table>
   <tr>
     <th>

@@ -157,6 +157,16 @@ def submit_login():
     else:
         return redirect('/login')
 
+@app.route("/search_user", methods=["POST"])
+def search_user():
+    name = request.form.get('search_bar')
+    query = db.query("select id from users where (first_name = $1 or last_name = $1)", name)
+    result_list = query.namedresult()
+    if len(result_list) > 0:
+        return redirect('/student_profile/%d' % result_list[0])
+    else:
+        return redirect('/')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
