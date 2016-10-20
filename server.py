@@ -313,12 +313,20 @@ def submit_login():
     if len(result_list) > 0:
         user = result_list[0]
         if user.password == password:
-            session['username'] = user.first_name
+            session['username'] = email
+            flash("%s, you have successfully logged into the application" % email)
             return redirect('/student_profile/%d' % user.id)
         else:
             return redirect('/login')
     else:
         return redirect('/login')
+
+
+@app.route("/submit_logout", methods = ["POST"])
+def submit_logout():
+    del session["username"]
+    return redirect("/")
+
 
 @app.route("/search_user", methods=["POST"])
 def search_user():
