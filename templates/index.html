@@ -3,21 +3,42 @@
 {% extends "layout.html" %}
 
 {% block body %}
+
+<h1>The current cohort at DigitalCrafts</h1>
+<p>Would you like to see all DigitalCrafts students, current and past? <a href="/all_students">Click here!</a></p>
 <table>
   <tr>
     <th>
       Name
     </th>
-
+    <th>
+      Cohort
+    </th>
   </tr>
-{% for item in query %}
+{% for item in student_result_list %}
+  <tr>
+    <td>
+      {{item.first_name}} {{item.last_name}}
+    </td>
+    <td>
+      {{item.cohort}}
+    </td>
+  </tr>
+{% endfor %}
+</table>
+<table>
+  <tr>
+    <th>
+      Cohort Instructors
+    </th>
+  </tr>
+  {% for item in instructor_result_list %}
   <tr>
     <td>
       {{item.first_name}} {{item.last_name}}
     </td>
   </tr>
-
 {% endfor %}
-
 </table>
+
 {% endblock %}

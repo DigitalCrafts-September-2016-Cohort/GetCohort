@@ -19,8 +19,56 @@ app.secret_key = os.environ.get("SECRET_KEY")
 
 @app.route('/')
 def home():
+    student_query = db.query('''
+        select
+        	users.id,
+        	first_name,
+        	last_name,
+        	cohort.name as cohort
+        from
+        	users,
+        	users_link_cohort,
+        	cohort,
+        	users_link_type,
+        	user_type
+        where
+        	users.id = users_link_type.user_id and
+        	users_link_type.user_type_id = user_type.id and
+        	users.id = users_link_cohort.user_id and
+        	users_link_cohort.cohort_id = cohort.id and
+            user_type.type = 'Student' and
+            cohort.name = 'September 2016'
+        ;
+    '''
+    )
+    instructor_query = db.query('''
+        select
+        	users.id,
+        	first_name,
+        	last_name,
+        	cohort.name as cohort
+        from
+        	users,
+        	users_link_cohort,
+        	cohort,
+        	users_link_type,
+        	user_type
+        where
+        	users.id = users_link_type.user_id and
+        	users_link_type.user_type_id = user_type.id and
+        	users.id = users_link_cohort.user_id and
+        	users_link_cohort.cohort_id = cohort.id and
+            user_type.type = 'Instructor' and
+            cohort.name = 'September 2016'
+        ;
+    '''
+    )
+    student_result_list = student_query.namedresult()
+    instructor_result_list = instructor_query.namedresult()
     return render_template(
-        "index.html"
+        "index.html",
+        student_result_list = student_result_list,
+        instructor_result_list = instructor_result_list
     )
 
 # @app.route('/get_cohort', methods=["POST"])
