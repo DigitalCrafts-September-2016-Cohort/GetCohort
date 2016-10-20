@@ -10,6 +10,10 @@ db = pg.DB(
     user=os.environ.get("PG_USERNAME"),
     passwd=os.environ.get("PG_PASSWORD")
 )
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7f6ef66fec31d9f44ccb54ca15f0fc8ecf2d3ac5
 db.debug = True
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -106,7 +110,6 @@ def all_students():
         	users_link_type.user_type_id = user_type.id and
         	users.id = users_link_cohort.user_id and
         	users_link_cohort.cohort_id = cohort.id and
-        	cohort.name = 'September 2016' and
         	user_type.type = 'Student'
         ;
     '''
@@ -172,6 +175,7 @@ def add_entry():
     email = request.form.get("email")
     web_page = request.form.get("web_page")
     github = request.form.get("github")
+    company_name = request.form.get("company_name")
     current_location = request.form.get("current_location")
     available_for_work = request.form.get("available_for_work")
     bio = request.form.get("bio")
@@ -199,6 +203,22 @@ def add_entry():
         user_id = user_id,
         user_type_id = user_type_id
     )
+    if company_name:
+        db.insert(
+            "company",
+            name = company_name
+        )
+        company_query = db.query("select id from company where name = $1", company_name).namedresult()
+        print "this is the company query: %r", company_query
+        company_id = company_query[0].id
+        db.insert(
+            "users_link_company",
+            user_id = user_id,
+            company_id = company_id
+
+        )
+    else:
+        pass
 
     query_user_type = db.query("""
     select
@@ -222,6 +242,7 @@ def add_entry():
             )
         else:
             pass
+
     return redirect("/all_students")
 
 @app.route('/login')
