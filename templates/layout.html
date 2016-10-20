@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="/static/css/style.css" media="screen" title="no title">
   </head>
   <body>
-
+    <h1>Welcome</h1>
+    <p>Hello, {{session['username'] or 'there'}}!</p>
     <br>
     <form action="/search_user" method="POST">
       <input type="text" name="search_bar" value="" placeholder="Search Students...">
@@ -14,9 +15,16 @@
     </form>
     <br>
 
+
+    
+
+
     {% block body %}
 
+    <!-- <p><a href="/login">Login</a></p> -->
     {% endblock %}
+
+
   </body>
 
 </html>

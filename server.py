@@ -1,7 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session
 import pg, os
 
 db = pg.DB(
@@ -22,6 +22,14 @@ def home():
     return render_template(
         "index.html"
     )
+
+@app.route('/student_profile')
+def student_profile_login():
+    name = request.form.get('name')
+
+    return redirect('/layout.html')
+
+
 
 # @app.route('/get_cohort', methods=["POST"])
 # def get_cohort():
@@ -64,6 +72,10 @@ def all_students():
     '''
     )
     result_list = query.namedresult()
+    # print '\n\nresult_list: %s\n\n' % result_list
+    # print "\n\nsession['username']%s\n\n" % session['username']
+
+    flash('Hello, %s !' % session['username'])
     return render_template(
         "all_students.html",
         result_list = result_list
@@ -96,6 +108,7 @@ def student_profile(id):
         ;
     """, id)
     result_list = query.namedresult()
+
     return render_template(
         "student_profile.html",
         student = result_list[0]
@@ -191,8 +204,8 @@ def submit_login():
     if len(result_list) > 0:
         user = result_list[0]
         if user.password == password:
-            session['email'] = user.email
-            return redirect('/')
+            session['username'] = user.first_name
+            return redirect('/student_profile/%d' % user.id)
         else:
             return redirect('/login')
     else:
