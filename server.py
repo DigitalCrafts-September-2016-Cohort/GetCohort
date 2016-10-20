@@ -123,10 +123,6 @@ def all_students():
     ''', cohort_name
     )
     result_list = query.namedresult()
-    # print '\n\nresult_list: %s\n\n' % result_list
-    # print "\n\nsession['username']%s\n\n" % session['username']
-
-    flash('Hello, %s !' % session['username'])
     return render_template(
         "all_students.html",
         result_list = result_list,
@@ -176,20 +172,19 @@ def delete():
     )
     return redirect("/all_students")
 
-@app.route("/update", methods=["POST", "GET"])
+@app.route("/update", methods=["POST"])
 def update():
-    email = request.form.get("email")
+    # email = request.form.get("email")
     user_id = request.form.get("id")
-    print "\n\nUser id from /update route %s\n\n" % user_id
+    print "\n\nUser ID: %s\n\n" % user_id
 
-    if session['email'] == email:
-        return render_template(
-            "update.html",
-            user_id=user_id,
-        )
-
-    else:
-        return redirect('/')
+    query_student = db.query("select * from users where id = $1", user_id)
+    result_list = query_student.namedresult()
+    return render_template(
+        "update.html",
+        result = result_list[0],
+        user_id = user_id
+    )
 
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
@@ -200,6 +195,10 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
+
+    print "\n\nUser ID: %s\n\n" % user_id
+    print "\n\nFirst name: %s\n\n" % first_name
+    print "\n\nBio: %s\n\n" % bio
 
     db.update(
         "users", {
@@ -310,10 +309,13 @@ def submit_login():
     password = request.form.get('password')
     query = db.query("select * from users where email = $1", email)
     result_list = query.namedresult()
+    print "result_list: %s\n\n\n" % result_list
     if len(result_list) > 0:
         user = result_list[0]
         if user.password == password:
-            session['username'] = email
+            session['first_name'] = user.first_name
+            session['email'] = user.email
+            session['id'] = user.id
             flash("%s, you have successfully logged into the application" % email)
             return redirect('/student_profile/%d' % user.id)
         else:
@@ -324,7 +326,9 @@ def submit_login():
 
 @app.route("/submit_logout", methods = ["POST"])
 def submit_logout():
-    del session["username"]
+    del session['first_name']
+    del session['email']
+    del session['id']
     return redirect("/")
 
 

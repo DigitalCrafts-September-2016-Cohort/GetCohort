@@ -18,5 +18,8 @@
 <form class="" action="/update" method="post">
   <input type="hidden" name="email" value="{{student.email}}">
   <input type="hidden" name="id" value="{{student.id}}">
+  {% if session['id'] == student.id %}
     <button type="submit" name="button_update_entry">Update Entry</button>
+  {% endif %}
+</form>
 {% endblock %}
