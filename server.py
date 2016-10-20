@@ -200,14 +200,61 @@ def submit_login():
 
 @app.route("/search_user", methods=["POST"])
 def search_user():
+
     name = request.form.get('search_bar')
-    name = "%"+name+"%"
-    query = db.query("select id from users where (first_name ilike $1 or last_name ilike $1)", name)
-    result_list = query.namedresult()
-    if len(result_list) > 0:
-        return redirect('/student_profile/%d' % result_list[0])
+    split_name = name.split()
+    name_length = len(name)
+    split_name_length = len(split_name)
+    first_name_to_search = "%"+split_name[0]+"%"
+    if name_length >= 3:
+        if split_name_length >= 2:
+            last_name_to_search = "%"+split_name[1]+"%"
+            query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
+            result_list = query.namedresult()
+            if len(result_list) == 1:
+                return redirect('/student_profile/%d' % result_list[0])
+            elif len(result_list) >= 2:
+                return render_template(
+                    "disambiguation.html",
+                    result_list = return_list
+                    )
+            else:
+                return redirect('/')
+
+        elif split_name_length <= 1:
+            query = db.query("select * from users where (first_name ilike $1 or last_name ilike $1)", first_name_to_search)
+            result_list = query.namedresult()
+            if len(result_list) == 1:
+                return redirect('/student_profile/%d' % result_list[0].id)
+            elif len(result_list) >= 2:
+                return render_template(
+                    "disambiguation.html",
+                    result_list = result_list
+                    )
+            else:
+                return redirect('/')
     else:
         return redirect('/')
+
+
+
+
+    #name = request.form.get('search_bar')
+    #print "\n\nname before split %s \n\n" % name
+    #name = name.split()
+    #print "\n\nname after split %s \n\n" % name
+    #name_length = len(name)
+    #print "\n\nname_length %s \n\n" % name_length
+    #name_to_search = "%"+name+"%"
+    #if name_length >= 3:
+        #query = db.query("select id from users where (first_name ilike $1 or last_name ilike $1)", name_to_search)
+        #result_list = query.namedresult()
+        #if len(result_list) > 0:
+            #return redirect('/student_profile/%d' % result_list[0])
+        #else:
+            #return redirect('/')
+    #else:
+        #return redirect('/')
 
 
 if __name__ == "__main__":
