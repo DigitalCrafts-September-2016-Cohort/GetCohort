@@ -10,10 +10,6 @@ db = pg.DB(
     user=os.environ.get("PG_USERNAME"),
     passwd=os.environ.get("PG_PASSWORD")
 )
-<<<<<<< HEAD
-=======
-
->>>>>>> 7f6ef66fec31d9f44ccb54ca15f0fc8ecf2d3ac5
 db.debug = True
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -114,11 +110,7 @@ def all_students():
         	users_link_type.user_type_id = user_type.id and
         	users.id = users_link_cohort.user_id and
         	users_link_cohort.cohort_id = cohort.id and
-<<<<<<< HEAD
-=======
-        	cohort.name = $1 and
->>>>>>> master
-        	user_type.type = 'Student'
+        	cohort.name = $1 and user_type.type = 'Student'
         ;
     ''', cohort_name
     )
