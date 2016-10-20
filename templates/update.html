@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+{{session}}
+
+<form class="" action="/update_entry" method="POST">
+  <input type="hidden" name="id" value="{{user_id}}">
+  <label for="">First Name:</label>
+  <input type="text" name="first_name" value="{{result.first_name}}">
+  <br>
+  <br>
+  <label for="">Last Name:</label>
+  <input type="text" name="last_name" value="{{result.last_name}}">
+  <br>
+  <br>
+  <label for="">Email:</label>
+  <input type="text" name="email" value="{{result.email}}">
+  <br>
+  <br>
+  <label for="">Web Page:</label>
+  <input type="text" name="web_page" value="{{result.web_page}}">
+  <br>
+  <br>
+  <label for="">GitHub:</label>
+  <input type="text" name="github" value="{{result.github}}">
+  <br>
+  <br>
+  <label for="">Short Bio:</label>
+  <textarea name="bio" rows="8" cols="40">{{result.bio}}</textarea>
+  <br>
+  <br>
+  <button type="submit">Update Entry</button>
+</form>
+{% endblock %}
