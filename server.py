@@ -85,7 +85,7 @@ def home():
 #         cohort_name = cohort_name
 #     )
 
-@app.route('/all_students', methods=["POST"])
+@app.route('/all_students', methods=["POST", "GET"])
 def all_students():
     query_cohort_name = db.query("select name from cohort;")
     cohort_list = query_cohort_name.namedresult()
