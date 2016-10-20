@@ -176,6 +176,45 @@ def delete():
     )
     return redirect("/all_students")
 
+@app.route("/update", methods=["POST", "GET"])
+def update():
+    email = request.form.get("email")
+    user_id = request.form.get("id")
+    print "\n\nUser id from /update route %s\n\n" % user_id
+
+    if session['email'] == email:
+        return render_template(
+            "update.html",
+            user_id=user_id,
+        )
+
+    else:
+        return redirect('/')
+
+@app.route("/update_entry", methods=["POST"])
+def update_entry():
+    user_id = request.form.get("id")
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
+    email = request.form.get("email")
+    web_page = request.form.get("web_page")
+    github = request.form.get("github")
+    bio = request.form.get("bio")
+
+    db.update(
+        "users", {
+            "id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "web_page": web_page,
+            "github": github,
+            "bio": bio
+            }
+        )
+
+    return redirect('/')
+
 @app.route("/add")
 def add():
     return render_template(
