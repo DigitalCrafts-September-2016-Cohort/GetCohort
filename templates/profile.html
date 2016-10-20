@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>User Profile</h1>
+<ul>
+  <h5>Name</h5>
+  <li>{{user.first_name}} {{user.last_name}}</li>
+  <h5>Email</h5>
+  <li>{{user.email}}</li>
+  <h5>Webpage</h5>
+  <li>{{user.web_page}}</li>
+  <h5>Github</h5>
+  <li>{{user.github}}</li>
+  <h5>Bio</h5>
+  <li>{{user.bio}}</li>
+  <h5>Location</h5>
+  <li>{{user.current_location}}</li>
+</ul>
+<form class="" action="/delete" method="post">
+  <input type="hidden" name="id" value="{{user.id}}">
+    <button type="submit" name="button_delete_entry">Delete Entry</button><br>
+
+</form>
+{% endblock %}

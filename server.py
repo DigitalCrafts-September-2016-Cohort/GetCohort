@@ -133,9 +133,33 @@ def all_students():
         cohort_list = cohort_list
     )
 
-@app.route('/student_profile/<id>')
-def student_profile(id):
-    query = db.query("""
+@app.route('/profile/<id>')
+def profile(id):
+    # query = db.query("""
+    #     select
+    #     	users.id,
+    #     	first_name,
+    #     	last_name,
+    #     	email,
+    #     	web_page,
+    #     	github,
+    #     	bio,
+    #     	cohort.name
+    #     from
+    #     	users,
+    #     	users_link_cohort,
+    #     	cohort,
+    #     	users_link_type,
+    #     	user_type
+    #     where
+    #     	users.id = users_link_type.user_id and
+    #     	users_link_type.user_type_id = user_type.id and
+    #     	users.id = users_link_cohort.user_id and
+    #     	users_link_cohort.cohort_id = cohort.id and
+    #     	users.id = $1
+    #     ;
+    # """, id)
+    query = db.query('''
         select
         	users.id,
         	first_name,
@@ -144,26 +168,17 @@ def student_profile(id):
         	web_page,
         	github,
         	bio,
-        	cohort.name
+        	users.password,
+            current_location
         from
-        	users,
-        	users_link_cohort,
-        	cohort,
-        	users_link_type,
-        	user_type
-        where
-        	users.id = users_link_type.user_id and
-        	users_link_type.user_type_id = user_type.id and
-        	users.id = users_link_cohort.user_id and
-        	users_link_cohort.cohort_id = cohort.id and
-        	users.id = $1
-        ;
-    """, id)
+        	users
+        where users.id = $1;
+    ''', id)
     result_list = query.namedresult()
 
     return render_template(
-        "student_profile.html",
-        student = result_list[0]
+        "profile.html",
+        user = result_list[0]
     )
 
 @app.route("/delete", methods=["POST"])
@@ -276,7 +291,8 @@ def submit_login():
         if user.password == password:
             session['username'] = email
             flash("%s, you have successfully logged into the application" % email)
-            return redirect('/student_profile/%d' % user.id)
+            # return redirect('/')
+            return redirect('/profile/%d' % user.id)
         else:
             return redirect('/login')
     else:
