@@ -85,9 +85,13 @@ def home():
 #         cohort_name = cohort_name
 #     )
 
-@app.route('/all_students')
+@app.route('/all_students', methods=["POST"])
 def all_students():
+    query_cohort_name = db.query("select name from cohort;")
+    cohort_list = query_cohort_name.namedresult()
+    print "\n\ncohort_list %s" % cohort_list
 
+    cohort_name = request.form.get('cohort_name')
 
     query = db.query('''
         select
@@ -106,15 +110,16 @@ def all_students():
         	users_link_type.user_type_id = user_type.id and
         	users.id = users_link_cohort.user_id and
         	users_link_cohort.cohort_id = cohort.id and
-        	cohort.name = 'September 2016' and
+        	cohort.name = $1 and
         	user_type.type = 'Student'
         ;
-    '''
+    ''', cohort_name
     )
     result_list = query.namedresult()
     return render_template(
         "all_students.html",
-        result_list = result_list
+        result_list = result_list,
+        cohort_list = cohort_list
     )
 
 @app.route('/student_profile/<id>')
