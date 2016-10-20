@@ -2,24 +2,20 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 from flask import Flask, redirect, render_template, request, session
-
 import pg, os
 
-# app = Flask("Get Cohort")
 db = pg.DB(
-    dbname=os.environ.get('PG_DBNAME'),
-    host=os.environ.get('PG_HOST'),
-    user=os.environ.get('PG_USERNAME'),
-    passwd=os.environ.get('PG_PASSWORD')
+    dbname=os.environ.get("PG_DBNAME"),
+    host=os.environ.get("PG_HOST"),
+    user=os.environ.get("PG_USERNAME"),
+    passwd=os.environ.get("PG_PASSWORD")
 )
-
-# db = pg.DB(dbname = 'getcohort_db')
 db.debug = True
+
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask("Get Cohort", template_folder=tmp_dir)
+app = Flask("Get Cohort", template_folder = tmp_dir)
 
-
-app.secret_key = "whatever"
+app.secret_key = os.environ.get("SECRET_KEY")
 
 @app.route('/')
 def home():
@@ -180,6 +176,38 @@ def add_entry():
             pass
     return redirect("/all_students")
 
+@app.route('/login')
+def display_login():
+    return render_template(
+        "login.html"
+    )
+
+@app.route("/submit_login", methods=["POST"])
+def submit_login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    query = db.query("select * from users where email = $1", email)
+    result_list = query.namedresult()
+    if len(result_list) > 0:
+        user = result_list[0]
+        if user.password == password:
+            session['email'] = user.email
+            return redirect('/')
+        else:
+            return redirect('/login')
+    else:
+        return redirect('/login')
+
+@app.route("/search_user", methods=["POST"])
+def search_user():
+    name = request.form.get('search_bar')
+    name = "%"+name+"%"
+    query = db.query("select id from users where (first_name ilike $1 or last_name ilike $1)", name)
+    result_list = query.namedresult()
+    if len(result_list) > 0:
+        return redirect('/student_profile/%d' % result_list[0])
+    else:
+        return redirect('/')
 
 
 if __name__ == "__main__":
