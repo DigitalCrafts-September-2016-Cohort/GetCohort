@@ -4,23 +4,37 @@
 
 {% block body %}
 
+<br>
+<br>
+<form class="" action="" method="">
+  <label for="">Cohort Name:</label>
+  <select name="cohort_name">
+    {% for cohort in cohort_list %}
+      <option value="{{cohort.name}}">{{cohort.name}}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" name="button_get_cohort">Get Cohort</button>
+</form>
+<br>
+<br>
+
 <table>
   <tr>
     <th>
       Name
     </th>
-
   </tr>
 {% for item in result_list %}
   <tr>
     <td>
       <a href="/student_profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
-
     </td>
   </tr>
 
 {% endfor %}
 </table>
+
+<br>
 <form class="" action="/add" method="">
   <button type="submit" name="button_add_entry">Add Entry</button>
 </form>

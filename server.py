@@ -23,8 +23,24 @@ def home():
         "index.html"
     )
 
+# @app.route('/get_cohort', methods=["POST"])
+# def get_cohort():
+#     query_cohort_name = db.query("select name from cohort;")
+#     cohort_list = query_cohort_name.namedresult()
+#     print "\n\nCohort: %s\n\n" % cohort_list
+#     cohort_name = request.form.get('cohort_name')
+#
+#     print "\n\n Cohort name: %s \n\n" % cohort_name
+#
+#     return render_template(
+#         "all_students.html",
+#         cohort_name = cohort_name
+#     )
+
 @app.route('/all_students')
 def all_students():
+
+
     query = db.query('''
         select
         	users.id,
@@ -48,7 +64,6 @@ def all_students():
     '''
     )
     result_list = query.namedresult()
-    print result_list
     return render_template(
         "all_students.html",
         result_list = result_list
@@ -81,7 +96,6 @@ def student_profile(id):
         ;
     """, id)
     result_list = query.namedresult()
-    print result_list
     return render_template(
         "student_profile.html",
         student = result_list[0]
@@ -113,6 +127,8 @@ def add_entry():
     current_location = request.form.get("current_location")
     available_for_work = request.form.get("available_for_work")
     bio = request.form.get("bio")
+    cohort_id = request.form.get("cohort_id")
+    user_type_id = request.form.get("user_type_id")
 
     db.insert (
         "users",
@@ -125,6 +141,39 @@ def add_entry():
         available_for_work = available_for_work,
         bio = bio
     )
+
+    query_new_entry = db.query("select id from users where email = $1", email)
+    result_list = query_new_entry.namedresult()
+    user_id = result_list[0].id
+
+    db.insert (
+        "users_link_type",
+        user_id = user_id,
+        user_type_id = user_type_id
+    )
+
+    query_user_type = db.query("""
+    select
+        users.id
+    from
+    	users,
+    	users_link_type,
+    	user_type
+    where
+    	users.id = users_link_type.user_id and
+    	users_link_type.user_type_id = user_type.id and
+    	(user_type.type = 'Student' or user_type.type = 'Instructor')
+    """)
+    user_result_list = query_user_type.namedresult()
+    for entry in user_result_list:
+        if user_id in entry:
+            db.insert (
+                "users_link_cohort",
+                user_id = user_id,
+                cohort_id = cohort_id
+            )
+        else:
+            pass
     return redirect("/all_students")
 
 @app.route('/login')

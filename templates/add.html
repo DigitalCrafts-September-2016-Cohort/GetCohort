@@ -39,29 +39,25 @@
   <input type="radio" name="available_for_work" value="FALSE">No?<br>
   <br>
   <br>
-  <label for=""></label>
-  <br>
-  <br>
+  <!-- Need to change this information.  It will come from the database -->
   <label for="">Which Cohort?</label>
-  <select class="form-control" name="cohort">
-    <option value="cohort_id">April 2016</option>
-    <option value="cohort_id">July 2016</option>
-    <option value="cohort_id">September 2016</option>
-  </select>
+  <input type="radio" name="cohort_id" value="1">April 2016<br>
+  <input type="radio" name="cohort_id" value="2">July 2016<br>
+  <input type="radio" name="cohort_id" value="3">September 2016<br>
+  <input type="radio" name="cohort_id" value="4">September 2016 Elective<br>
   <br>
   <br>
-  <label for="">User Class?</label>
-  <select class="form-control" name="cohort">
-    <option value="user_type_id">Student</option>
-    <option value="user_type_id">Instructor</option>
-    <option value="user_type_id">Admin</option>
-  </select>
+  <!-- Need to change this information.  It will come from the database -->
+  <label for="">User type?</label>
+  <input type="radio" name="user_type_id" value="1">Student<br>
+  <input type="radio" name="user_type_id" value="2">Instructor<br>
+  <input type="radio" name="user_type_id" value="3">Admin<br>
+  <input type="radio" name="user_type_id" value="4">Alumnus<br>
+  <input type="radio" name="user_type_id" value="5">Employer<br>
   <br>
   <br>
   <button type="submit" name="button_create_entry">Create Entry</button>
 
-
 </form>
-
 
 {% endblock %}
