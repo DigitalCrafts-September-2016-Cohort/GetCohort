@@ -7,8 +7,16 @@
   </head>
   <body>
 
+    <br>
+    <form action="/search_user" method="POST">
+      <input type="text" name="search_bar" value="" placeholder="Search Students...">
+      <button type="submit" name="search_submit">Submit</button>
+    </form>
+    <br>
+
     {% block body %}
-    <p>HELLO!!!</p>
+
     {% endblock %}
   </body>
+
 </html>

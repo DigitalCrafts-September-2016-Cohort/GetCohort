@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 
 {% extends "layout.html" %}
-<form action="/search_user" method="POST">
-  <input type="text" name="search_bar" value="Search...">
-  <button type="submit" name="search_submit">Submit</button>
-</form>
 
 {% block body %}
-<form action="/search_user" method="POST">
-  <input type="text" name="search_bar" value="Search...">
-  <button type="submit" name="search_submit">Submit</button>
-</form>
 
 <table>
   <tr>
@@ -28,11 +20,9 @@
   </tr>
 
 {% endfor %}
-
 </table>
 <form class="" action="/add" method="">
-
-
-<button type="submit" name="button_add_entry">Add Entry</button>
+  <button type="submit" name="button_add_entry">Add Entry</button>
 </form>
+
 {% endblock %}
