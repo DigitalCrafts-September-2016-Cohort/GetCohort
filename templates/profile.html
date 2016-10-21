@@ -27,14 +27,19 @@
 <h1>Projects</h1>
 <ul>
   {%  for entry in project_query %}
-    <li>{{entry.name}}</li>
+    <li><a href="/project_profile/{{entry.id}}">{{entry.name}}</a></li>
   {% endfor %}
+  <form action="/upload" method="post" enctype="multipart/form-data">
+        <li><input type="hidden" name="id" value="{{user.id}}">
+          <input type="file" name="file">
+        <input type="submit" value="Upload"></li>
+  </form>
 </ul>
 
 <h1>Skills</h1>
 <ul>
   {%  for entry in skill_query %}
-    <li>{{entry.name}}</li>
+    <li><a href="/skill_profile/{{entry.id}}">{{entry.name}}</a></li>
   {% endfor %}
 </ul>
 
