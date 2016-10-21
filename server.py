@@ -132,9 +132,33 @@ def profile(id):
         where users.id = $1;
     ''', id)
     result_list = query.namedresult()
+    project_query = db.query('''
+        select
+            project.name
+        from
+            users,
+            users_link_project,
+            project
+        where
+            users.id = users_link_project.users_id and users_link_project.project_id = project.id and
+            users.id = $1;
+    ''', id).namedresult()
+    skill_query = db.query('''
+        select
+            name
+        from
+            users,
+            users_link_skill,
+            skill
+        where
+            users.id = users_link_skill.users_id and users_link_skill.skill_id = skill.id and users.id = $1;
+    ''', id).namedresult()
+    print project_query
     return render_template(
         "profile.html",
-        user = result_list[0]
+        user = result_list[0],
+        project_query = project_query,
+        skill_query = skill_query
     )
 
 @app.route("/delete", methods=["POST"])

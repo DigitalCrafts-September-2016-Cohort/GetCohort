@@ -24,5 +24,18 @@
       <button class="btn btn-danger" type="submit" name="button_delete_entry">Delete Entry</button>
   </form>
 {% endif %}
+<h1>Projects</h1>
+<ul>
+  {%  for entry in project_query %}
+    <li>{{entry.name}}</li>
+  {% endfor %}
+</ul>
+
+<h1>Skills</h1>
+<ul>
+  {%  for entry in skill_query %}
+    <li>{{entry.name}}</li>
+  {% endfor %}
+</ul>
 
 {% endblock %}
