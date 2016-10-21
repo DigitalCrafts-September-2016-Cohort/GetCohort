@@ -24,6 +24,15 @@
 </form>
 <br>
 <br>
+{% if result_list[0] %}
+
+  These are the students in the {{result_list[0].name}} Cohort.
+
+{% else %}
+
+  Choose the Cohort you would like to view.
+
+{% endif %}
 <table>
   <tr>
     <th>
@@ -33,7 +42,7 @@
 {% for item in result_list %}
   <tr>
     <td>
-      <a href="/student_profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
+      <a href="/profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
     </td>
   </tr>
 

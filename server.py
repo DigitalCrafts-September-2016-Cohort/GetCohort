@@ -71,7 +71,7 @@ def home():
         instructor_result_list = instructor_result_list
     )
 
-@app.route('/student_profile')
+@app.route('/profile')
 def student_profile_login():
     name = request.form.get('name')
 
@@ -113,37 +113,28 @@ def all_students():
         cohort_list = cohort_list
     )
 
-@app.route('/student_profile/<id>')
-def student_profile(id):
-    query = db.query("""
+@app.route('/profile/<id>')
+def profile(id):
+    query = db.query('''
         select
-        	users.id,
+        	id,
         	first_name,
         	last_name,
         	email,
         	web_page,
         	github,
         	bio,
-        	cohort.name
+        	password,
+            current_location
         from
-        	users,
-        	users_link_cohort,
-        	cohort,
-        	users_link_type,
-        	user_type
-        where
-        	users.id = users_link_type.user_id and
-        	users_link_type.user_type_id = user_type.id and
-        	users.id = users_link_cohort.user_id and
-        	users_link_cohort.cohort_id = cohort.id and
-        	users.id = $1
-        ;
-    """, id)
+        	users
+        where users.id = $1;
+    ''', id)
     result_list = query.namedresult()
 
     return render_template(
-        "student_profile.html",
-        student = result_list[0]
+        "profile.html",
+        user = result_list[0]
     )
 
 @app.route("/delete", methods=["POST"])
@@ -294,7 +285,7 @@ def submit_login():
             session['email'] = user.email
             session['id'] = user.id
             flash("%s, you have successfully logged into the application" % session["first_name"])
-            return redirect('/student_profile/%d' % user.id)
+            return redirect('/profile/%d' % user.id)
         else:
             return redirect("/")
     else:
@@ -321,7 +312,7 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/student_profile/%d' % result_list[0])
+                return redirect('/profile/%d' % result_list[0])
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
@@ -334,7 +325,7 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $1)", first_name_to_search)
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/student_profile/%d' % result_list[0].id)
+                return redirect('/profile/%d' % result_list[0].id)
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
