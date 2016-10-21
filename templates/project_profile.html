@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+{% block body %}
+<br>
+<h1>{{project.name}}</h1>
+<p>
+  Project Information
+</p>
+<ul>
+  <li>{{project.link}}</li>
+  <li>{{project.image}}</li>
+  <li>{{project.description}}</li>
+</ul>
+
+<br>
+<p>
+  Technology used:
+</p>
+<ul>
+  {% for skill in skills %}
+  <li>
+    {{skill.skill_name}}
+  </li>
+  {% endfor %}
+</ul>
+<br>
+<p>
+  Developer(s):
+</p>
+<ul>
+  {% for contributor in contributors %}
+  <li>
+    <a href="/profile/{{contributor.users_link_id}}">{{contributor.first_name}} {{contributor.last_name}}</a>
+  </li>
+
+  {% endfor %}
+</ul>
+
+{% endblock %}

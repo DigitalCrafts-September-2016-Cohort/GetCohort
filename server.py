@@ -1,8 +1,9 @@
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 import pg, os
+from werkzeug import secure_filename
 
 db = pg.DB(
     dbname=os.environ.get("PG_DBNAME"),
@@ -10,12 +11,25 @@ db = pg.DB(
     user=os.environ.get("PG_USERNAME"),
     passwd=os.environ.get("PG_PASSWORD")
 )
+
+
 db.debug = True
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask("Get Cohort", template_folder = tmp_dir)
 
+app.config['UPLOAD_FOLDER'] = './static/images'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
 app.secret_key = os.environ.get("SECRET_KEY")
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
 
 @app.route('/')
 def home():
@@ -132,9 +146,34 @@ def profile(id):
         where users.id = $1;
     ''', id)
     result_list = query.namedresult()
+    project_query = db.query('''
+        select
+            project.name,
+            project.id
+        from
+            users,
+            users_link_project,
+            project
+        where
+            users.id = users_link_project.users_id and users_link_project.project_id = project.id and
+            users.id = $1;
+    ''', id).namedresult()
+    skill_query = db.query('''
+        select
+            name,
+            skill.id
+        from
+            users,
+            users_link_skill,
+            skill
+        where
+            users.id = users_link_skill.users_id and users_link_skill.skill_id = skill.id and users.id = $1;
+    ''', id).namedresult()
     return render_template(
         "profile.html",
-        user = result_list[0]
+        user = result_list[0],
+        project_query = project_query,
+        skill_query = skill_query
     )
 
 @app.route("/delete", methods=["POST"])
@@ -357,7 +396,98 @@ def search_user():
     else:
         return redirect('/')
 
+@app.route("/all_projects")
+def all_projects():
+    query = db.query("select * from project;")
+    project_list = query.namedresult()
+    return render_template(
+        "all_projects.html",
+        project_list = project_list
+    )
 
+@app.route("/project_profile/<id>")
+def project_profile(id):
+    query_projects = db.query("select * from project where id = $1;", id)
+    print "This is the query %s:" % query_projects
+    project_list = query_projects.namedresult()
+    print "This is the project list %s:" % project_list
+    query_skills = db.query("""
+        select
+        	project.id as project_identifier,
+        	project.name as project_name,
+        	project.link,
+        	project.image,
+        	project.description,
+        	skill.id as skill_identifier,
+        	skill.name as skill_name,
+        	project_link_skill.project_id,
+        	project_link_skill.skill_id
+        from
+            project,
+            skill,
+            project_link_skill
+        where
+        	project.id = project_link_skill.project_id and
+        	skill.id = project_link_skill.skill_id and
+        	project.id = $1
+        ;""", id)
+    skills = query_skills.namedresult()
+    query_contributors = db.query("""
+        select
+            users.first_name,
+            users.last_name,
+            project.name as project_name,
+            users_link_project.users_id as users_link_id,
+            users_link_project.project_id as project_link_id
+        from
+            users,
+            project,
+            users_link_project
+        where
+            users.id = users_link_project.users_id and
+            project.id = users_link_project.project_id and
+            project.id = $1
+        ;""", id)
+    contributors = query_contributors.namedresult()
+    return render_template(
+        "project_profile.html",
+        project = project_list[0],
+        skills = skills,
+        contributors = contributors
+    )
+
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    # user_id = request.form.get("id")
+    # user_id = int(user_id)
+    # Get the name of the uploaded file
+    file = request.files['file']
+    # Check if the file is one of the allowed types/extensions
+    print "we're uploading"
+    if file and allowed_file(file.filename):
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(file.filename)
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Redirect the user to the uploaded_file route, which
+        # will basically show on the browser the uploaded file
+        print "we uploaded?"
+        return redirect('/'
+            # filename=filename
+        )
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+        filename)
+
+@app.route('/profile/upload', methods=['POST'])
+def profile_upload():
+    print "did we upload?"
+    return redirect('/all_students'
+        )
 
 if __name__ == "__main__":
     app.run(debug=True)
