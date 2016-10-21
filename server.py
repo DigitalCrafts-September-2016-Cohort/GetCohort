@@ -71,11 +71,12 @@ def home():
         instructor_result_list = instructor_result_list
     )
 
-@app.route('/profile')
-def student_profile_login():
-    name = request.form.get('name')
-
-    return redirect('/layout.html')
+# Route might not be needed. Will delete later
+# @app.route('/profile')
+# def student_profile_login():
+#     name = request.form.get('name')
+#
+#     return redirect('/layout.html')
 
 @app.route('/all_students', methods=["POST", "GET"])
 def all_students():
@@ -124,7 +125,7 @@ def profile(id):
         	web_page,
         	github,
         	bio,
-        	password,
+        	users.password,
             current_location
         from
         	users
