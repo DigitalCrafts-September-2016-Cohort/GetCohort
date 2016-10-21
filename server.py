@@ -316,6 +316,7 @@ def submit_logout():
     del session['first_name']
     del session['email']
     del session['id']
+    del session['is_admin']
     return redirect("/")
 
 @app.route("/search_user", methods=["POST"])
