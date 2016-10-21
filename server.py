@@ -71,27 +71,12 @@ def home():
         instructor_result_list = instructor_result_list
     )
 
-@app.route('/student_profile')
-def student_profile_login():
-    name = request.form.get('name')
-
-    return redirect('/layout.html')
-
-
-
-# @app.route('/get_cohort', methods=["POST"])
-# def get_cohort():
-#     query_cohort_name = db.query("select name from cohort;")
-#     cohort_list = query_cohort_name.namedresult()
-#     print "\n\nCohort: %s\n\n" % cohort_list
-#     cohort_name = request.form.get('cohort_name')
+# Route might not be needed. Will delete later
+# @app.route('/profile')
+# def student_profile_login():
+#     name = request.form.get('name')
 #
-#     print "\n\n Cohort name: %s \n\n" % cohort_name
-#
-#     return render_template(
-#         "all_students.html",
-#         cohort_name = cohort_name
-#     )
+#     return redirect('/layout.html')
 
 @app.route('/all_students', methods=["POST", "GET"])
 def all_students():
@@ -123,10 +108,6 @@ def all_students():
     ''', cohort_name
     )
     result_list = query.namedresult()
-    # print '\n\nresult_list: %s\n\n' % result_list
-    # print "\n\nsession['username']%s\n\n" % session['username']
-
-    flash('Hello, %s !' % session['username'])
     return render_template(
         "all_students.html",
         result_list = result_list,
@@ -135,33 +116,9 @@ def all_students():
 
 @app.route('/profile/<id>')
 def profile(id):
-    # query = db.query("""
-    #     select
-    #     	users.id,
-    #     	first_name,
-    #     	last_name,
-    #     	email,
-    #     	web_page,
-    #     	github,
-    #     	bio,
-    #     	cohort.name
-    #     from
-    #     	users,
-    #     	users_link_cohort,
-    #     	cohort,
-    #     	users_link_type,
-    #     	user_type
-    #     where
-    #     	users.id = users_link_type.user_id and
-    #     	users_link_type.user_type_id = user_type.id and
-    #     	users.id = users_link_cohort.user_id and
-    #     	users_link_cohort.cohort_id = cohort.id and
-    #     	users.id = $1
-    #     ;
-    # """, id)
     query = db.query('''
         select
-        	users.id,
+        	id,
         	first_name,
         	last_name,
         	email,
@@ -190,6 +147,48 @@ def delete():
         }
     )
     return redirect("/all_students")
+
+@app.route("/update", methods=["POST"])
+def update():
+    # email = request.form.get("email")
+    user_id = request.form.get("id")
+    print "\n\nUser ID: %s\n\n" % user_id
+
+    query_student = db.query("select * from users where id = $1", user_id)
+    result_list = query_student.namedresult()
+    return render_template(
+        "update.html",
+        result = result_list[0],
+        user_id = user_id
+    )
+
+@app.route("/update_entry", methods=["POST"])
+def update_entry():
+    user_id = request.form.get("id")
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
+    email = request.form.get("email")
+    web_page = request.form.get("web_page")
+    github = request.form.get("github")
+    bio = request.form.get("bio")
+
+    print "\n\nUser ID: %s\n\n" % user_id
+    print "\n\nFirst name: %s\n\n" % first_name
+    print "\n\nBio: %s\n\n" % bio
+
+    db.update(
+        "users", {
+            "id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "web_page": web_page,
+            "github": github,
+            "bio": bio
+            }
+        )
+
+    return redirect('/')
 
 @app.route("/add")
 def add():
@@ -244,7 +243,6 @@ def add_entry():
             "users_link_company",
             user_id = user_id,
             company_id = company_id
-
         )
     else:
         pass
@@ -274,36 +272,32 @@ def add_entry():
 
     return redirect("/all_students")
 
-@app.route('/login')
-def display_login():
-    return render_template(
-        "login.html"
-    )
-
 @app.route("/submit_login", methods=["POST"])
 def submit_login():
     email = request.form.get('email')
     password = request.form.get('password')
     query = db.query("select * from users where email = $1", email)
     result_list = query.namedresult()
+    print "result_list: %s\n\n\n" % result_list
     if len(result_list) > 0:
         user = result_list[0]
         if user.password == password:
-            session['username'] = email
-            flash("%s, you have successfully logged into the application" % email)
-            # return redirect('/')
+            session['first_name'] = user.first_name
+            session['email'] = user.email
+            session['id'] = user.id
+            flash("%s, you have successfully logged into the application" % session["first_name"])
             return redirect('/profile/%d' % user.id)
         else:
-            return redirect('/login')
+            return redirect("/")
     else:
-        return redirect('/login')
-
+        return redirect("/")
 
 @app.route("/submit_logout", methods = ["POST"])
 def submit_logout():
-    del session["username"]
+    del session['first_name']
+    del session['email']
+    del session['id']
     return redirect("/")
-
 
 @app.route("/search_user", methods=["POST"])
 def search_user():
@@ -319,7 +313,7 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/student_profile/%d' % result_list[0])
+                return redirect('/profile/%d' % result_list[0])
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
@@ -332,7 +326,7 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $1)", first_name_to_search)
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/student_profile/%d' % result_list[0].id)
+                return redirect('/profile/%d' % result_list[0].id)
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
@@ -343,25 +337,6 @@ def search_user():
     else:
         return redirect('/')
 
-
-
-
-    #name = request.form.get('search_bar')
-    #print "\n\nname before split %s \n\n" % name
-    #name = name.split()
-    #print "\n\nname after split %s \n\n" % name
-    #name_length = len(name)
-    #print "\n\nname_length %s \n\n" % name_length
-    #name_to_search = "%"+name+"%"
-    #if name_length >= 3:
-        #query = db.query("select id from users where (first_name ilike $1 or last_name ilike $1)", name_to_search)
-        #result_list = query.namedresult()
-        #if len(result_list) > 0:
-            #return redirect('/student_profile/%d' % result_list[0])
-        #else:
-            #return redirect('/')
-    #else:
-        #return redirect('/')
 
 
 if __name__ == "__main__":
