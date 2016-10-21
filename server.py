@@ -392,11 +392,53 @@ def all_projects():
 
 @app.route("/project_profile/<id>")
 def project_profile(id):
-    query = db.query("select * from project where id = $1;", id)
-    project_list = query.namedresult()
+    query_projects = db.query("select * from project where id = $1;", id)
+    print "This is the query %s:" % query_projects
+    project_list = query_projects.namedresult()
+    print "This is the project list %s:" % project_list
+    query_skills = db.query("""
+        select
+        	project.id as project_identifier,
+        	project.name as project_name,
+        	project.link,
+        	project.image,
+        	project.description,
+        	skill.id as skill_identifier,
+        	skill.name as skill_name,
+        	project_link_skill.project_id,
+        	project_link_skill.skill_id
+        from
+            project,
+            skill,
+            project_link_skill
+        where
+        	project.id = project_link_skill.project_id and
+        	skill.id = project_link_skill.skill_id and
+        	project.id = $1
+        ;""", id)
+    skills = query_skills.namedresult()
+    query_contributors = db.query("""
+        select
+            users.first_name,
+            users.last_name,
+            project.name as project_name,
+            users_link_project.users_id as users_link_id,
+            users_link_project.project_id as project_link_id
+        from
+            users,
+            project,
+            users_link_project
+        where
+            users.id = users_link_project.users_id and
+            project.id = users_link_project.project_id and
+            project.id = $1
+        ;""", id)
+    contributors = query_contributors.namedresult()
     return render_template(
         "project_profile.html",
-        project = project_list[0]
+        project = project_list[0],
+        skills = skills,
+        contributors = contributors
     )
 
 
