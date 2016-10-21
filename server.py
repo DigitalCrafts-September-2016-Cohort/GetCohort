@@ -280,12 +280,6 @@ def add_entry():
 
     return redirect("/all_students")
 
-@app.route('/login')
-def display_login():
-    return render_template(
-        "login.html"
-    )
-
 @app.route("/submit_login", methods=["POST"])
 def submit_login():
     email = request.form.get('email')
@@ -299,12 +293,12 @@ def submit_login():
             session['first_name'] = user.first_name
             session['email'] = user.email
             session['id'] = user.id
-            flash("%s, you have successfully logged into the application" % email)
+            flash("%s, you have successfully logged into the application" % session["first_name"])
             return redirect('/student_profile/%d' % user.id)
         else:
-            return redirect('/login')
+            return redirect("/")
     else:
-        return redirect('/login')
+        return redirect("/")
 
 @app.route("/submit_logout", methods = ["POST"])
 def submit_logout():
