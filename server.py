@@ -357,6 +357,23 @@ def search_user():
     else:
         return redirect('/')
 
+@app.route("/all_projects")
+def all_projects():
+    query = db.query("select * from project;")
+    project_list = query.namedresult()
+    return render_template(
+        "all_projects.html",
+        project_list = project_list
+    )
+
+@app.route("/project_profile/<id>")
+def project_profile(id):
+    query = db.query("select * from project where id = $1;", id)
+    project_list = query.namedresult()
+    return render_template(
+        "project_profile.html",
+        project = project_list[0]
+    )
 
 
 if __name__ == "__main__":
