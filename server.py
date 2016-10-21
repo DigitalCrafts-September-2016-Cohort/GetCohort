@@ -110,7 +110,7 @@ def all_students():
     return render_template(
         "all_students.html",
         result_list = result_list,
-        cohort_list = cohort_list
+        cohort_list = cohort_list,
     )
 
 @app.route('/profile/<id>')
@@ -131,7 +131,6 @@ def profile(id):
         where users.id = $1;
     ''', id)
     result_list = query.namedresult()
-
     return render_template(
         "profile.html",
         user = result_list[0]
@@ -276,7 +275,21 @@ def submit_login():
     email = request.form.get('email')
     password = request.form.get('password')
     query = db.query("select * from users where email = $1", email)
+    admin_query = db.query('''
+    select
+    	users.email,
+    	user_type.type
+    from
+    	users,
+    	users_link_type,
+    	user_type
+    where
+    	users.id = users_link_type.user_id and
+    	users_link_type.user_type_id = user_type.id
+    	and user_type.type = 'Admin';
+    ''')
     result_list = query.namedresult()
+    admin_list = admin_query.namedresult()
     print "result_list: %s\n\n\n" % result_list
     if len(result_list) > 0:
         user = result_list[0]
@@ -284,6 +297,12 @@ def submit_login():
             session['first_name'] = user.first_name
             session['email'] = user.email
             session['id'] = user.id
+            #new session variable
+            for entry in admin_list:
+                if entry.email == session['email']:
+                    session['is_admin'] = True
+                else:
+                    session['is_admin'] = False
             flash("%s, you have successfully logged into the application" % session["first_name"])
             return redirect('/profile/%d' % user.id)
         else:

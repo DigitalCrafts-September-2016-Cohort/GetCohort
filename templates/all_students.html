@@ -49,9 +49,13 @@
 {% endfor %}
 </table>
 
-<br>
-<form class="" action="/add" method="">
-  <button class="btn btn-default" type="submit" name="button_add_entry">Add Entry</button>
-</form>
+{% if session['is_admin'] %}
+    <br>
+    <form class="" action="/add" method="">
+      <button class="btn btn-default" type="submit" name="button_add_entry">Add Entry</button>
+    </form>
+  {% else %}
+    <br>
+  {% endif %}
 
 {% endblock %}
