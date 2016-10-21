@@ -1,8 +1,9 @@
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 import pg, os
+from werkzeug import secure_filename
 
 db = pg.DB(
     dbname=os.environ.get("PG_DBNAME"),
@@ -10,12 +11,25 @@ db = pg.DB(
     user=os.environ.get("PG_USERNAME"),
     passwd=os.environ.get("PG_PASSWORD")
 )
+
+
 db.debug = True
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask("Get Cohort", template_folder = tmp_dir)
 
+app.config['UPLOAD_FOLDER'] = './static/images'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
 app.secret_key = os.environ.get("SECRET_KEY")
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
 
 @app.route('/')
 def home():
@@ -134,7 +148,8 @@ def profile(id):
     result_list = query.namedresult()
     project_query = db.query('''
         select
-            project.name
+            project.name,
+            project.id
         from
             users,
             users_link_project,
@@ -145,7 +160,8 @@ def profile(id):
     ''', id).namedresult()
     skill_query = db.query('''
         select
-            name
+            name,
+            skill.id
         from
             users,
             users_link_skill,
@@ -153,7 +169,6 @@ def profile(id):
         where
             users.id = users_link_skill.users_id and users_link_skill.skill_id = skill.id and users.id = $1;
     ''', id).namedresult()
-    print project_query
     return render_template(
         "profile.html",
         user = result_list[0],
@@ -399,6 +414,38 @@ def project_profile(id):
         project = project_list[0]
     )
 
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    # user_id = request.form.get("id")
+    # user_id = int(user_id)
+    # Get the name of the uploaded file
+    file = request.files['file']
+    # Check if the file is one of the allowed types/extensions
+    print "we're uploading"
+    if file and allowed_file(file.filename):
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(file.filename)
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Redirect the user to the uploaded_file route, which
+        # will basically show on the browser the uploaded file
+        print "we uploaded?"
+        return redirect('/'
+            # filename=filename
+        )
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+        filename)
+
+@app.route('/profile/upload', methods=['POST'])
+def profile_upload():
+    print "did we upload?"
+    return redirect('/all_students'
+        )
 
 if __name__ == "__main__":
     app.run(debug=True)
