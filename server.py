@@ -77,22 +77,6 @@ def student_profile_login():
 
     return redirect('/layout.html')
 
-
-
-# @app.route('/get_cohort', methods=["POST"])
-# def get_cohort():
-#     query_cohort_name = db.query("select name from cohort;")
-#     cohort_list = query_cohort_name.namedresult()
-#     print "\n\nCohort: %s\n\n" % cohort_list
-#     cohort_name = request.form.get('cohort_name')
-#
-#     print "\n\n Cohort name: %s \n\n" % cohort_name
-#
-#     return render_template(
-#         "all_students.html",
-#         cohort_name = cohort_name
-#     )
-
 @app.route('/all_students', methods=["POST", "GET"])
 def all_students():
     query_cohort_name = db.query("select name from cohort;")
@@ -267,7 +251,6 @@ def add_entry():
             "users_link_company",
             user_id = user_id,
             company_id = company_id
-
         )
     else:
         pass
@@ -323,14 +306,12 @@ def submit_login():
     else:
         return redirect('/login')
 
-
 @app.route("/submit_logout", methods = ["POST"])
 def submit_logout():
     del session['first_name']
     del session['email']
     del session['id']
     return redirect("/")
-
 
 @app.route("/search_user", methods=["POST"])
 def search_user():
@@ -370,25 +351,6 @@ def search_user():
     else:
         return redirect('/')
 
-
-
-
-    #name = request.form.get('search_bar')
-    #print "\n\nname before split %s \n\n" % name
-    #name = name.split()
-    #print "\n\nname after split %s \n\n" % name
-    #name_length = len(name)
-    #print "\n\nname_length %s \n\n" % name_length
-    #name_to_search = "%"+name+"%"
-    #if name_length >= 3:
-        #query = db.query("select id from users where (first_name ilike $1 or last_name ilike $1)", name_to_search)
-        #result_list = query.namedresult()
-        #if len(result_list) > 0:
-            #return redirect('/student_profile/%d' % result_list[0])
-        #else:
-            #return redirect('/')
-    #else:
-        #return redirect('/')
 
 
 if __name__ == "__main__":
