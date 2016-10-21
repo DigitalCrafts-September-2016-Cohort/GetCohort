@@ -49,3 +49,13 @@ td, th {
 tr:nth-child(odd) {
     background-color: #fff;
 }
+
+img {
+  border-radius: 50%;
+  margin: auto;
+  display: block;
+}
+
+span {
+  display: block;
+}
