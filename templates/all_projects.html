@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+{% block body %}
+<br>
+<table>
+  <tr>
+    <th>
+      Name
+    </th>
+  </tr>
+{% for project in project_list %}
+  <tr>
+    <td>
+      <a href="/project_profile/{{project.id}}">{{project.name}}</a>
+    </td>
+  </tr>
+
+{% endfor %}
+</table>
+{% endblock %}
