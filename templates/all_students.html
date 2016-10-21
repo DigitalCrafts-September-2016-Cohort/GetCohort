@@ -8,12 +8,19 @@
 <br>
 <form class="" action="" method="POST">
   <label for="">Cohort Name:</label>
-  <select name="cohort_name" onchange="this.form.submit()">
-    <option value="select_cohort">Select Cohort</option>
-    {% for cohort in cohort_list %}
-      <option value="{{cohort.name}}">{{cohort.name}}</option>
-    {% endfor %}
-  </select>
+
+  <div class="row">
+    <div class="col-md-3">
+      <select class="form-control" name="cohort_name" onchange="this.form.submit()">
+        <option value="select_cohort">Select Cohort</option>
+        {% for cohort in cohort_list %}
+          <option value="{{cohort.name}}">{{cohort.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+
 </form>
 <br>
 <br>
@@ -35,7 +42,7 @@
 
 <br>
 <form class="" action="/add" method="">
-  <button type="submit" name="button_add_entry">Add Entry</button>
+  <button class="btn btn-default" type="submit" name="button_add_entry">Add Entry</button>
 </form>
 
 {% endblock %}

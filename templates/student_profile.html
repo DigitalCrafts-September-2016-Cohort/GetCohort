@@ -11,15 +11,15 @@
   <li>{{student.bio}}</li>
   <li>{{student.name}}</li>
 </ul>
-<form class="" action="/delete" method="post">
-  <input type="hidden" name="id" value="{{student.id}}">
-    <button type="submit" name="button_delete_entry">Delete Entry</button>
-</form>
-<form class="" action="/update" method="post">
+<form class="form-group" action="/update" method="post">
   <input type="hidden" name="email" value="{{student.email}}">
   <input type="hidden" name="id" value="{{student.id}}">
   {% if session['id'] == student.id %}
-    <button type="submit" name="button_update_entry">Update Entry</button>
+    <button class="btn btn-default" type="submit" name="button_update_entry">Update Entry</button>
   {% endif %}
+</form>
+<form class="form-group" action="/delete" method="post">
+  <input type="hidden" name="id" value="{{student.id}}">
+    <button class="btn btn-danger" type="submit" name="button_delete_entry">Delete Entry</button>
 </form>
 {% endblock %}

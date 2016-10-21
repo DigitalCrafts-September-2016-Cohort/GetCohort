@@ -1,5 +1,32 @@
 body {
   background-color: lightgreen;
+  padding-top: 50px;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+/*
+ * Flash Messages Style
+ */
+
+.flashes {
+  background-color: green;
+  color: white;
+  border-radius: 100px;
+}
+
+.flashes li {
+  list-style: none;
 }
 
 table {
