@@ -50,12 +50,24 @@ tr:nth-child(odd) {
     background-color: #fff;
 }
 
-img {
+img.avatar {
   border-radius: 50%;
   margin: auto;
+  margin-top: 50px;
   display: block;
+  height: 200px;
+  width: 200px;
 }
 
-span {
+img.small-avatar {
+  border-radius: 50%;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+}
+
+a span {
   display: block;
 }
