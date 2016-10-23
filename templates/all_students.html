@@ -19,52 +19,72 @@
       </select>
     </div>
   </div>
-
-  <div class="row">
-
-    {% for item in result_list %}
-      <div class="col-md-3">
-          <a href="/profile/{{item.id}}">
-          <img src="http://i.pravatar.cc/200?img=1"><br>
-          <span class="text-center">{{item.first_name}} {{item.last_name}}</span></a>
-      </div>
-    {% endfor %}
-  </div>
-
-
-
 </form>
-<br>
-<br>
-{% if result_list[0] %}
-  Here are the students in the {{result_list[0].name}} Cohort.
-{% else %}
-  Choose the Cohort you would like to view.
-{% endif %}
-<br>
-<table>
-  <tr>
-    <th>
-      Name
-    </th>
-  </tr>
-{% for item in result_list %}
-  <tr>
-    <td>
-      <a href="/profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
-    </td>
-  </tr>
 
-{% endfor %}
-</table>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#grid">Grid View</a></li>
+      <li><a data-toggle="tab" href="#table">Table View</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="grid" class="tab-pane fade in active">
+        {% if result_list[0] %}
+          <h3>{{result_list[0].name}} cohort</h3>
+        {% endif %}
+        {% for item in result_list %}
+          <div class="col-md-3">
+              <a href="/profile/{{item.id}}">
+                {% if item.avatar %}
+                  <img class="avatar" src="/static/images/{{item.avatar}}">
+                {% else %}
+                  <img class="avatar" src="/static/images/default-avatar.png" alt="" />
+                {% endif %}
+              <span class="text-center">{{item.first_name}} {{item.last_name}}</span></a>
+          </div>
+        {% endfor %}
+      </div>
+      <div id="table" class="tab-pane fade">
+        {% if result_list[0] %}
+          <h3>{{result_list[0].name}} cohort</h3>
+          <br>
+          <table>
+            <tr>
+              <th>
+                Name
+              </th>
+            </tr>
+          {% for item in result_list %}
+            <tr>
+              <td>
+                <a href="/profile/{{item.id}}">
+                  {% if item.avatar %}
+                    <img class="small-avatar" src="/static/images/{{item.avatar}}" />{{item.first_name}} {{item.last_name}}
+                  {% else %}
+                    <img class="small-avatar" src="/static/images/default-avatar.png" alt="" />{{item.first_name}} {{item.last_name}}
+                  {% endif %}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+          </table>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% if session['is_admin'] %}
-    <br>
-    <form class="" action="/add" method="">
-      <button class="btn btn-default" type="submit" name="button_add_entry">Add Entry</button>
-    </form>
-  {% else %}
-    <br>
-  {% endif %}
+  <br>
+  <form class="" action="/add" method="">
+    <button class="btn btn-default" type="submit" name="button_add_entry">Add Entry</button>
+  </form>
+{% else %}
+  <br>
+{% endif %}
 
 {% endblock %}

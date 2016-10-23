@@ -2,45 +2,97 @@
 
 {% extends "layout.html" %}
 {% block body %}
-<h1>User Profile</h1>
-<ul>
-  <li>{{user.first_name}} {{user.last_name}}</li>
-  <li>{{user.email}}</li>
-  <li>{{user.web_page}}</li>
-  <li>{{user.github}}</li>
-  <li>{{user.bio}}</li>
-  <li>{{user.current_location}}</li>
-</ul>
-<form class="form-group" action="/update" method="post">
-  <input type="hidden" name="email" value="{{user.email}}">
-  <input type="hidden" name="id" value="{{user.id}}">
-  {% if session['id'] == user.id %}
-    <button class="btn btn-default" type="submit" name="button_update_entry">Update Entry</button>
-  {% endif %}
-</form>
-{% if session['is_admin'] %}
-  <form class="form-group" action="/delete" method="post">
-    <input type="hidden" name="id" value="{{user.id}}">
-      <button class="btn btn-danger" type="submit" name="button_delete_entry">Delete Entry</button>
-  </form>
-{% endif %}
-<h1>Projects</h1>
-<ul>
-  {%  for entry in project_query %}
-    <li><a href="/project_profile/{{entry.id}}">{{entry.name}}</a></li>
-  {% endfor %}
-  <form action="/upload" method="post" enctype="multipart/form-data">
-        <li><input type="hidden" name="id" value="{{user.id}}">
-          <input type="file" name="file">
-        <input type="submit" value="Upload"></li>
-  </form>
-</ul>
 
-<h1>Skills</h1>
-<ul>
-  {%  for entry in skill_query %}
-    <li><a href="/skill_profile/{{entry.id}}">{{entry.name}}</a></li>
-  {% endfor %}
-</ul>
+<div class="container-fluid">
+  <div class="fb-profile cf">
+    <img align="left" class="fb-image-lg" src="/static/images/pexels-photo-207499.jpeg" alt=""/>
+    {% if user.avatar %}
+      <img align="left" class="fb-image-profile thumbnail" src="/static/images/{{user.avatar}}" />
+    {% else %}
+      <img align="left" class="fb-image-profile thumbnail" src="/static/images/default-avatar.png" alt="" />
+    {% endif %}
+    <div class="fb-profile-text">
+      <h1>{{user.first_name}} {{user.last_name}}</h1>
+      <p>
+        {{user.current_location}}
+      </p>
+    </div>
+  </div>
+
+
+  <div class="row profile-info">
+    <!-- column one -->
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+      <ul class="icons-section">
+        <li class="icons"><a href="http://www.{{user.web_page}}" target="_blank">
+          <i class="fa fa-globe" aria-hidden="true"></i>
+        </a></li>
+        <li class="icons"><a href="mailto:{{user.email}}" target="_top">
+          <i class="fa fa-envelope-o" aria-hidden="true"></i>
+        </a></li>
+        <li class="icons"><a href="https://github.com/{{user.github}}" target="_blank">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a></li>
+      </ul>
+    </div>
+
+    <!-- column two -->
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 pull-right-sm">
+      <p>{{user.bio}}</p>
+    </div>
+  </div>
+
+  <div class="row">
+  <!-- column one -->
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+      <h2>Skills</h2>
+      <ul>
+        {%  for entry in skill_query %}
+          <li><a href="/skill_profile/{{entry.id}}">{{entry.name}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- column two -->
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 pull-right-sm">
+      <h1>Projects</h1>
+      <ul>
+        {%  for entry in project_query %}
+          <li><a href="/project_profile/{{entry.id}}">{{entry.name}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+  <!-- /.row-->
+
+  <br>
+  <div class="row">
+    <div class="col-lg-12">
+      <form class="form-group" action="/update" method="post">
+        <input type="hidden" name="email" value="{{user.email}}">
+        <input type="hidden" name="id" value="{{user.id}}">
+        {% if session['id'] == user.id %}
+          <button class="btn btn-default" type="submit" name="button_update_entry">Update Entry</button>
+        {% endif %}
+      </form>
+      <br>
+      <br>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{user.id}}">
+        <input type="file" name="file">
+        <br>
+        <input class="btn btn-default" type="submit" value="Upload">
+      </form>
+      {% if session['is_admin'] %}
+        <form class="form-group" action="/delete" method="post">
+          <input type="hidden" name="id" value="{{user.id}}">
+          <button class="btn btn-danger" type="submit" name="button_delete_entry">Delete Entry</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+</div> <!-- /container-fluid -->
 
 {% endblock %}

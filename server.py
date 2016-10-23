@@ -2,7 +2,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
-import pg, os
+import pg, os, random, string
 from werkzeug import secure_filename
 
 db = pg.DB(
@@ -22,12 +22,12 @@ app.config['UPLOAD_FOLDER'] = './static/images'
 # These are the extension that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
-
 app.secret_key = os.environ.get("SECRET_KEY")
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+        filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
 
 
 
@@ -105,6 +105,7 @@ def all_students():
         	users.id,
         	first_name,
         	last_name,
+            avatar,
         	cohort.name
         from
         	users,
@@ -139,6 +140,7 @@ def profile(id):
         	web_page,
         	github,
         	bio,
+            avatar,
         	users.password,
             current_location
         from
@@ -459,21 +461,34 @@ def project_profile(id):
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    # user_id = request.form.get("id")
+    file_name_size = 64
+    user_id = request.form.get("id")
     # user_id = int(user_id)
     # Get the name of the uploaded file
     file = request.files['file']
+    print "Name of the file %s" % file
     # Check if the file is one of the allowed types/extensions
     print "we're uploading"
     if file and allowed_file(file.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
+        file_extension = filename.rsplit('.', 1)[1]
+        print "file extension: %s" % file_extension
+        # Create new random name for the file using letters and digits
+        filename = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(file_name_size)]) + "." + file_extension
+        print "Name of the file - second time %s" % filename
         # Move the file form the temporal folder to
         # the upload folder we setup
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Redirect the user to the uploaded_file route, which
         # will basically show on the browser the uploaded file
         print "we uploaded?"
+        db.update (
+            "users", {
+                "id": user_id,
+                "avatar": filename
+            }
+        )
         return redirect('/'
             # filename=filename
         )
@@ -488,6 +503,12 @@ def profile_upload():
     print "did we upload?"
     return redirect('/all_students'
         )
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template (
+        "404.html"
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
