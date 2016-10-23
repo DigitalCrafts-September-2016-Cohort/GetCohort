@@ -403,7 +403,7 @@ def search_user():
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
-                    result_list = return_list
+                    result_list = result_list
                     )
             else:
                 return redirect('/')
