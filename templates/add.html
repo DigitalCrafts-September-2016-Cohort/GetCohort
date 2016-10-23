@@ -52,67 +52,33 @@
       </label>
     </div>
   </div>
-  <!-- Need to change this information.  It will come from the database -->
+
+  <!-- Information now comes from the database! -->
   <div class="form-group">
     <label for="">Which Cohort?</label>
+    {% for entry in query_cohort_name %}
     <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="1">
-        April 2016
+      <label><input type="radio" name="cohort_id" value="{{entry.id}}">
+      {{entry.name}}
       </label>
     </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="2">
-        July 2016
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="3">
-        September 2016
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="4">
-        September 2016 Elective
-      </label>
-    </div>
+    {% endfor %}
   </div>
-  <!-- Need to change this information.  It will come from the database -->
+  <br>
+
+  <!-- Information now comes from the database! -->
   <div class="form-group">
     <label for="">User Type?</label>
+    {% for entry in query_user_type %}
     <div class="radio">
       <label>
-        <input type="radio" name="user_type_id" value="1">
-        Student
+        <input type="radio" name="user_type_id" value="{{entry.id}}">
+        {{entry.type}}
       </label>
     </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="user_type_id" value="2">
-        Instructor
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="user_type_id" value="3">
-        Admin
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="user_type_id" value="4">
-        Alum
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="user_type_id" value="5">
-        Employer
-      </label>
-    </div>
+    {% endfor %}
+    <br>
+
   </div>
   <button class="btn btn-default" type="submit" name="button_create_entry">Create Entry</button>
 </form>
