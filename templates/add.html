@@ -57,30 +57,13 @@
   <!-- Need to change this information.  It will come from the database -->
   <div class="form-group">
     <label for="">Which Cohort?</label>
+    {% for entry in query_cohort_name %}
     <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="1">
-        April 2016
+      <label><input type="radio" name="cohort_id" value="{{entry.id}}">
+      {{entry.name}}
       </label>
     </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="2">
-        July 2016
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="3">
-        September 2016
-      </label>
-    </div>
-    <div class="radio">
-      <label>
-        <input type="radio" name="cohort_id" value="4">
-        September 2016 Elective
-      </label>
-    </div>
+    {% endfor %}
   </div>
 
   <!-- Need to change this information.  It will come from the database -->
