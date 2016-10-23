@@ -106,10 +106,7 @@ def home():
 def all_students():
     query_cohort_name = db.query("select name from cohort;")
     cohort_list = query_cohort_name.namedresult()
-    print "\n\ncohort_list %s" % cohort_list
-
     cohort_name = request.form.get('cohort_name')
-
     query = db.query('''
         select
         	users.id,
@@ -205,8 +202,6 @@ def delete():
 def update():
     # email = request.form.get("email")
     user_id = request.form.get("id")
-    print "\n\nUser ID: %s\n\n" % user_id
-
     query_student = db.query("select * from users where id = $1", user_id)
     result_list = query_student.namedresult()
     return render_template(
@@ -225,10 +220,6 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
-
-    print "\n\nUser ID: %s\n\n" % user_id
-    print "\n\nFirst name: %s\n\n" % first_name
-    print "\n\nBio: %s\n\n" % bio
 
     db.update(
         "users", {
@@ -320,14 +311,6 @@ def add_entry():
     else:
         pass
 
-    # query_cohort_name = ("""
-    # select
-    # 	cohort.id,
-    # 	name
-    # from
-    # 	cohort;
-    # """).namedresult()
-
     query_user_type = db.query("""
     select
         users.id
@@ -373,7 +356,6 @@ def submit_login():
     ''')
     result_list = query.namedresult()
     admin_list = admin_query.namedresult()
-    print "result_list: %s\n\n\n" % result_list
     if len(result_list) > 0:
         user = result_list[0]
         if user.password == password:
@@ -406,7 +388,6 @@ def submit_logout():
 # Search bar for specifc user
 @app.route("/search_user", methods=["POST"])
 def search_user():
-
     name = request.form.get('search_bar')
     split_name = name.split()
     name_length = len(name)
@@ -456,9 +437,7 @@ def all_projects():
 @app.route("/project_profile/<id>")
 def project_profile(id):
     query_projects = db.query("select * from project where id = $1;", id)
-    print "This is the query %s:" % query_projects
     project_list = query_projects.namedresult()
-    print "This is the project list %s:" % project_list
     query_skills = db.query("""
         select
         	project.id as project_identifier,
@@ -512,23 +491,18 @@ def upload():
     # user_id = int(user_id)
     # Get the name of the uploaded file
     file = request.files['file']
-    print "Name of the file %s" % file
     # Check if the file is one of the allowed types/extensions
-    print "we're uploading"
     if file and allowed_file(file.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
         file_extension = filename.rsplit('.', 1)[1]
-        print "file extension: %s" % file_extension
         # Create new random name for the file using letters and digits
         filename = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(file_name_size)]) + "." + file_extension
-        print "Name of the file - second time %s" % filename
         # Move the file form the temporal folder to
         # the upload folder we setup
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Redirect the user to the uploaded_file route, which
         # will basically show on the browser the uploaded file
-        print "we uploaded?"
         db.update (
             "users", {
                 "id": user_id,
@@ -551,7 +525,6 @@ def uploaded_file(filename):
 # Route that will load the uploaded image to user profile
 @app.route('/profile/upload', methods=['POST'])
 def profile_upload():
-    print "did we upload?"
     return redirect('/all_students'
         )
 # Route to handle any errors
