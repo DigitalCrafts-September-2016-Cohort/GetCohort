@@ -203,11 +203,27 @@ def update():
     # email = request.form.get("email")
     user_id = request.form.get("id")
     query_student = db.query("select * from users where id = $1", user_id)
+    query_project_name = db.query("""
+    select
+        id,
+        name
+    from
+        project;
+    """).namedresult()
+    query_skill_name = db.query("""
+    select
+        id,
+        name
+    from
+        skill
+    """).namedresult()
     result_list = query_student.namedresult()
     return render_template(
         "update.html",
         result = result_list[0],
-        user_id = user_id
+        user_id = user_id,
+        query_project_name = query_project_name,
+        query_skill_name = query_skill_name
     )
 
 # Route handler to actually Update User info, queries info in database
@@ -220,18 +236,23 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
+    project = request.form.get("project_id")
+    skill = request.form.get("skill_id")
 
-    db.update(
-        "users", {
-            "id": user_id,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "web_page": web_page,
-            "github": github,
-            "bio": bio
-            }
-        )
+    print project
+    print skill
+
+    # db.update(
+    #     "users", {
+    #         "id": user_id,
+    #         "first_name": first_name,
+    #         "last_name": last_name,
+    #         "email": email,
+    #         "web_page": web_page,
+    #         "github": github,
+    #         "bio": bio
+    #         }
+    #     )
 
     return redirect('/')
 
@@ -399,7 +420,8 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/profile/%d' % result_list[0])
+                print result_list
+                return redirect('/profile/%d' % result_list[0].id)
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
