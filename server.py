@@ -1,10 +1,16 @@
+#Import and load dotenv folder for python to easily set environment variables
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
-
+# # We'll render HTML templates and access data sent by POST
+# using the request object from flask. Redirect and url_for
+# will be used to redirect the user once the upload is done
+# and send_from_directory will help us to send/show on the
+# browser the file that the user just uploaded
 from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 import pg, os, random, string
 from werkzeug import secure_filename
 
+# Database credentials for local Database
 db = pg.DB(
     dbname=os.environ.get("PG_DBNAME"),
     host=os.environ.get("PG_HOST"),
@@ -12,25 +18,27 @@ db = pg.DB(
     passwd=os.environ.get("PG_PASSWORD")
 )
 
-
 db.debug = True
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+# Initialize the Flask application
 app = Flask("Get Cohort", template_folder = tmp_dir)
-
+# Link to the images folder in the static folder
 app.config['UPLOAD_FOLDER'] = './static/images'
-# These are the extension that we are accepting to be uploaded
+# These are the extensions that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
+# Secret Key to generate encrypted tokens used to verify identity
 app.secret_key = os.environ.get("SECRET_KEY")
 
+# For a given file, return whether it's an allowed type or not(images)
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
-
-
+# This route will perform a request to execute given request and update
+# the value of the operation
 @app.route('/')
 def home():
     student_query = db.query('''
@@ -92,6 +100,8 @@ def home():
 #
 #     return redirect('/layout.html')
 
+
+# Route for All Students page to generate data based on query request
 @app.route('/all_students', methods=["POST", "GET"])
 def all_students():
     query_cohort_name = db.query("select name from cohort;")
@@ -129,6 +139,7 @@ def all_students():
         cohort_list = cohort_list,
     )
 
+# Route to generate user profile info for ids from query
 @app.route('/profile/<id>')
 def profile(id):
     query = db.query('''
@@ -178,6 +189,7 @@ def profile(id):
         skill_query = skill_query
     )
 
+# Delete user info, then send back to All Students
 @app.route("/delete", methods=["POST"])
 def delete():
     id = request.form.get("id")
@@ -188,6 +200,7 @@ def delete():
     )
     return redirect("/all_students")
 
+# Route handler to send user to Update entry
 @app.route("/update", methods=["POST"])
 def update():
     # email = request.form.get("email")
@@ -202,6 +215,7 @@ def update():
         user_id = user_id
     )
 
+# Route handler to actually Update User info, queries info in database
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
     user_id = request.form.get("id")
@@ -230,6 +244,7 @@ def update_entry():
 
     return redirect('/')
 
+# Route handler to add user to database and site
 @app.route("/add")
 def add():
     query_cohort_name = db.query("""
@@ -253,7 +268,7 @@ def add():
         query_cohort_name=query_cohort_name,
         query_user_type=query_user_type
     )
-
+# Route handler to enter Add User Info in form as well as database
 @app.route("/add_entry", methods=["POST"])
 def add_entry():
     first_name = request.form.get("first_name")
@@ -267,7 +282,7 @@ def add_entry():
     bio = request.form.get("bio")
     cohort_id = request.form.get("cohort_id")
     user_type_id = request.form.get("user_type_id")
-
+    # insert user info to database
     db.insert (
         "users",
         first_name = first_name,
@@ -337,7 +352,7 @@ def add_entry():
             pass
 
     return redirect("/all_students")
-
+# this route will allow user to login to site and their account
 @app.route("/submit_login", methods=["POST"])
 def submit_login():
     email = request.form.get('email')
@@ -379,6 +394,7 @@ def submit_login():
     else:
         return redirect("/")
 
+# Submits request for user to login
 @app.route("/submit_logout", methods = ["POST"])
 def submit_logout():
     del session['first_name']
@@ -387,6 +403,7 @@ def submit_logout():
     del session['is_admin']
     return redirect("/")
 
+# Search bar for specifc user
 @app.route("/search_user", methods=["POST"])
 def search_user():
 
@@ -425,6 +442,7 @@ def search_user():
     else:
         return redirect('/')
 
+# Renders All Projects listed in database
 @app.route("/all_projects")
 def all_projects():
     query = db.query("select * from project;")
@@ -434,6 +452,7 @@ def all_projects():
         project_list = project_list
     )
 
+# Project profile lists that project, info regarding project, skills/technology used, as well as team members on project
 @app.route("/project_profile/<id>")
 def project_profile(id):
     query_projects = db.query("select * from project where id = $1;", id)
@@ -485,7 +504,7 @@ def project_profile(id):
         contributors = contributors
     )
 
-
+# Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
     file_name_size = 64
@@ -520,17 +539,22 @@ def upload():
             # filename=filename
         )
 
+# Route that will process the file upload to a folder and
+# will locate that file on the upload
+# directory and show it on the browser, so if the user uploads
+# an image, that image is going to be show after the upload
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
         filename)
 
+# Route that will load the uploaded image to user profile
 @app.route('/profile/upload', methods=['POST'])
 def profile_upload():
     print "did we upload?"
     return redirect('/all_students'
         )
-
+# Route to handle any errors
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template (
