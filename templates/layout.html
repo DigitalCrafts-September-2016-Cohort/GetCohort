@@ -36,9 +36,9 @@
               <span>
                 Hello
                 {{ session["first_name"].capitalize() }}!
-                {% if session['id'].avatar %}
+                {% if session['avatar'] %}
                   <a href="/profile/{{session['id']}}">
-                    <img class="nav-avatar" src="/static/images/{{session['id'].avatar}}" alt="{{ session['first_name']}}"/>
+                    <img class="nav-avatar" src="/static/images/{{session['avatar']}}" alt="{{ session['first_name']}}"/>
                   </a>
                 {% else %}
                   <a href="/profile/{{session['id']}}">

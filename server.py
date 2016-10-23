@@ -365,6 +365,7 @@ def submit_login():
             session['first_name'] = user.first_name
             session['email'] = user.email
             session['id'] = user.id
+            session['avatar'] = user.avatar
             #new session variable
             for entry in admin_list:
                 if entry.email == session['email']:
