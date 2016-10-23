@@ -240,9 +240,18 @@ def add():
     	cohort;
     """).namedresult()
 
+    query_user_type = db.query("""
+    select
+        id,
+        type
+    from
+        user_type;
+    """).namedresult()
+
     return render_template(
         "add.html",
-        query_cohort_name=query_cohort_name
+        query_cohort_name=query_cohort_name,
+        query_user_type=query_user_type
     )
 
 @app.route("/add_entry", methods=["POST"])
