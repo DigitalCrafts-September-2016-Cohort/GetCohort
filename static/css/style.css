@@ -134,6 +134,13 @@ div .fa {
   padding: 0;
 }
 
+.locationIcon {
+  color: blue;
+}
+
+.emailIcon {
+  color: red;
+}
 
 /*
  * FB-like section styles
