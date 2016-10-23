@@ -1,6 +1,15 @@
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+.cf:after {
+  clear: both;
+}
+
 body {
   background-color: lightgreen;
-  padding-top: 50px;
+  padding-top: 75px;
 }
 
 html {
@@ -14,6 +23,19 @@ html {
   -moz-box-sizing: inherit;
   box-sizing: inherit;
 }
+
+/*
+ * Body Wrappers Style
+ */
+
+ #wrapper {
+     padding-left: 0;
+     -webkit-transition: all 0.5s ease;
+     -moz-transition: all 0.5s ease;
+     -o-transition: all 0.5s ease;
+     transition: all 0.5s ease;
+ }
+
 
 /*
  * Flash Messages Style
@@ -50,6 +72,10 @@ tr:nth-child(odd) {
     background-color: #fff;
 }
 
+/*
+ * Avatar styles
+ */
+
 img.avatar {
   border-radius: 50%;
   margin: auto;
@@ -68,6 +94,136 @@ img.small-avatar {
   width: 50px;
 }
 
+.nav-avatar {
+  margin-left: 5px;
+  margin-right: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+}
+
 a span {
   display: block;
+}
+
+/*
+ * Profile Info Section
+ */
+.profile-info {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/*
+ * Icons Section
+ */
+
+i {
+ color: #000;
+}
+
+div .fa {
+ font-size: 28px;
+}
+
+.icons {
+  list-style-type: none;
+  display: inline-block;
+  margin: 0 10px;
+  padding: 0;
+}
+
+
+/*
+ * FB-like section styles
+ */
+
+.fb-profile img.fb-image-lg {
+    z-index: 0;
+    max-height: 300px;
+    height: 100%;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    background-size: cover;
+}
+
+.fb-image-profile {
+    margin: -90px 10px 0px 50px;
+    z-index: 9;
+    width: 20%;
+}
+
+/*
+ * Media queries
+ */
+
+ /* Medium Devices, Desktops */
+@media (max-width: 992px) {
+  h1 {
+    font-size: 28px;
+    margin-bottom: 0;
+  }
+
+  .fb-profile img.fb-image-lg {
+    max-height: 250px;
+  }
+
+  .icons {
+    margin: 0 5px;
+  }
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 768px) {
+  .fb-profile img.fb-image-lg {
+    max-height: 200px;
+    border-radius: 10px;
+  }
+
+  .fb-profile-text > h1 {
+      font-weight: 700;
+      font-size:16px;
+   }
+
+  .fb-image-profile {
+      margin: -40px 10px 0px 25px;
+      z-index: 9;
+      width: 22%;
+    }
+
+  .icons-section {
+    padding-left: 25px;
+  }
+
+  div .fa {
+    font-size: 22px;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media (max-width: 480px) {
+  body {
+    padding-top: 50px;
+  }
+
+  .fb-profile img.fb-image-lg {
+    border-radius: 5px;
+  }
+
+  .fb-profile-text > h1 {
+      font-weight: 700;
+      font-size:16px;
+   }
+
+  .fb-image-profile {
+      margin: -35px 10px 0px 25px;
+      z-index: 9;
+      width: 25%;
+    }
+
+  div .fa {
+    font-size: 18px;
+  }
 }
