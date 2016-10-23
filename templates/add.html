@@ -5,7 +5,8 @@
 {% block body %}
 <!-- Header -->
 
-<!-- Form -->
+<!-- Form
+Here's the bulk of the add_entry from. These fields will supply information to the users table in the database.-->
 <p>Who would you like to add?</p>
 <form class="form-horizontal" action="/add_entry" method="post">
   <div class="form-group">
@@ -55,7 +56,7 @@
     </div>
   </div>
 
-  <!-- Information now comes from the database! -->
+  <!-- Information now comes from the database! The for loop below will take the query_cohort_name query supplied from the '/add' app.route and populates the list with the data from the database.-->
   <div class="form-group">
     <label for="">Which Cohort?</label>
     {% for entry in query_cohort_name %}
@@ -68,7 +69,7 @@
   </div>
   <br>
 
-  <!-- Information now comes from the database! -->
+  <!-- Information now comes from the database! Similar to the above for loop. This time it takes the user_type information from the database-->
   <div class="form-group">
     <label for="">User Type?</label>
     {% for entry in query_user_type %}
