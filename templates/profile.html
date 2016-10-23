@@ -6,7 +6,11 @@
 <div class="container-fluid">
   <div class="fb-profile cf">
     <img align="left" class="fb-image-lg" src="/static/images/pexels-photo-207499.jpeg" alt=""/>
-    <img align="left" class="fb-image-profile thumbnail" src="http://i.pravatar.cc/200?img=1" alt=""/>
+    {% if user.avatar %}
+      <img align="left" class="fb-image-profile thumbnail" src="/static/images/{{user.avatar}}" />
+    {% else %}
+      <img align="left" class="fb-image-profile thumbnail" src="/static/images/default-avatar.png" alt="" />
+    {% endif %}
     <div class="fb-profile-text">
       <h1>{{user.first_name}} {{user.last_name}}</h1>
       <p>

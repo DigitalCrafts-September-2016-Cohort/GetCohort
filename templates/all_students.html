@@ -38,7 +38,11 @@
         {% for item in result_list %}
           <div class="col-md-3">
               <a href="/profile/{{item.id}}">
-              <img class="avatar" src="http://i.pravatar.cc/200?img=1"><br>
+                {% if item.avatar %}
+                  <img class="avatar" src="/static/images/{{item.avatar}}">
+                {% else %}
+                  <img class="avatar" src="/static/images/default-avatar.png" alt="" />
+                {% endif %}
               <span class="text-center">{{item.first_name}} {{item.last_name}}</span></a>
           </div>
         {% endfor %}
@@ -57,7 +61,11 @@
             <tr>
               <td>
                 <a href="/profile/{{item.id}}">
-                  <img class="small-avatar" src="http://i.pravatar.cc/200?img=1"> {{item.first_name}} {{item.last_name}}
+                  {% if item.avatar %}
+                    <img class="small-avatar" src="/static/images/{{item.avatar}}" />{{item.first_name}} {{item.last_name}}
+                  {% else %}
+                    <img class="small-avatar" src="/static/images/default-avatar.png" alt="" />{{item.first_name}} {{item.last_name}}
+                  {% endif %}
                 </a>
               </td>
             </tr>
