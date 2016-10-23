@@ -4,8 +4,11 @@
 
 {% block body %}
 
+<!-- Header -->
 <h1>The current cohort at DigitalCrafts</h1>
 <p>Would you like to see all DigitalCrafts students, current and past? <a href="/all_students">Click here!</a></p>
+
+<!-- Student Table -->
 <table>
   <tr>
     <th>
@@ -18,7 +21,7 @@
 {% for item in student_result_list %}
   <tr>
     <td>
-      {{item.first_name}} {{item.last_name}}
+      <a href="/profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
     </td>
     <td>
       {{item.cohort}}
@@ -26,6 +29,8 @@
   </tr>
 {% endfor %}
 </table>
+
+<!-- Instructor Table -->
 <table>
   <tr>
     <th>
@@ -35,7 +40,7 @@
   {% for item in instructor_result_list %}
   <tr>
     <td>
-      {{item.first_name}} {{item.last_name}}
+      <a href="/profile/{{item.id}}">{{item.first_name}} {{item.last_name}}</a>
     </td>
   </tr>
 {% endfor %}
