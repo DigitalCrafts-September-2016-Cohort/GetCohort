@@ -232,8 +232,17 @@ def update_entry():
 
 @app.route("/add")
 def add():
+    query_cohort_name = db.query("""
+    select
+    	cohort.id,
+    	name
+    from
+    	cohort;
+    """).namedresult()
+
     return render_template(
-        "add.html"
+        "add.html",
+        query_cohort_name=query_cohort_name
     )
 
 @app.route("/add_entry", methods=["POST"])
@@ -286,6 +295,14 @@ def add_entry():
         )
     else:
         pass
+
+    # query_cohort_name = ("""
+    # select
+    # 	cohort.id,
+    # 	name
+    # from
+    # 	cohort;
+    # """).namedresult()
 
     query_user_type = db.query("""
     select
