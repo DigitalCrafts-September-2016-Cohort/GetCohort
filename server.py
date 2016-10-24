@@ -36,6 +36,7 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
+        
 
 # This route will perform a request to execute given request and update
 # the value of the operation
@@ -87,11 +88,16 @@ def home():
     )
     student_result_list = student_query.namedresult()
     instructor_result_list = instructor_query.namedresult()
-    return render_template(
-        "index.html",
-        student_result_list = student_result_list,
-        instructor_result_list = instructor_result_list
-    )
+    if 'email' in session:
+        return render_template(
+            "index.html",
+            student_result_list = student_result_list,
+            instructor_result_list = instructor_result_list
+        )
+    else:
+        return render_template (
+            "index_landing.html"
+        )
 
 # Route might not be needed. Will delete later
 # @app.route('/profile')
