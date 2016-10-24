@@ -24,7 +24,8 @@ tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 # Initialize the Flask application
 app = Flask("Get Cohort", template_folder = tmp_dir)
 # Link to the images folder in the static folder
-app.config['UPLOAD_FOLDER'] = './static/images'
+images_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/images')
+app.config['UPLOAD_FOLDER'] = images_dir
 # These are the extensions that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
