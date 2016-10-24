@@ -8,9 +8,9 @@ contact information or links to their other resources like LinkedIn and Github, 
 
 Contributors:
 Juan Cortes- Bootstrap, Avatar, login/logout, 404 page, Database
-Matthew Downs- Permissions, Database,
+Matthew Downs- Permissions, Database, Queries
 Trista McCleary- Comments, login/logout, Database
-Kevin Farmer- Search bar, Permissions, Database
+Kevin Farmer- Search bar, Permissions, Database, Readme
 
 Technologies:
 HTML/CSS
@@ -19,6 +19,7 @@ Flask
 PostgreSQL
 
 Screenshots:
+![](/static/images/frontpage.png)
 
 URL:
 
