@@ -585,6 +585,28 @@ def project_profile(id):
         images_information = project_images
     )
 
+@app.route("/skill_profile/<id>")
+def skill_profile(id):
+    skill = db.query("select name from skill where id = $1", id).namedresult()
+    practitioners = db.query("""
+    select
+    	first_name,
+    	last_name
+    from
+    	users,
+    	users_link_skill,
+    	skill
+    where
+    	users.id = users_link_skill.users_id and
+    	users_link_skill.skill_id = skill.id and
+    	skill.id = $1;
+    """, id).namedresult()
+    return render_template(
+        "skill.html",
+        skill = skill[0],
+        practitioners = practitioners
+    )
+
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
