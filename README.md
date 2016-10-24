@@ -19,7 +19,9 @@ Flask
 PostgreSQL
 
 Screenshots:
-![](/static/images/frontpage.png)
+![front page](/static/images/frontpage.png)
+![matt profile page](/static/images/mattprofile.png)
+![code screenshot](/static/images/code.png)
 
 URL:
 
