@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>{{skill.name}}</h1>
+
+These students at Digital Crafts are proficiant in {{skill.name}}:
+<ul>
+  {% for person in practitioners %}
+  <li>
+    <a href="/profile/{{person.users_link_id}}">{{person.first_name}} {{person.last_name}}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

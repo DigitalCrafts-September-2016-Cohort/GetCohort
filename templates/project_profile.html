@@ -51,10 +51,10 @@
     {% endfor %}
     <br>
     <br>
-    <hr>
     {% for ids in contributors_id_list %}
       {% for id in ids %}
         {% if session['id'] in ids %}
+          <hr>
           <h4>Upload Project Images</h4>
           <form action="/upload" method="post" enctype="multipart/form-data">
             <input type="hidden" name="project_id" value="{{project.id}}">

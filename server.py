@@ -204,11 +204,27 @@ def update():
     # email = request.form.get("email")
     user_id = request.form.get("id")
     query_student = db.query("select * from users where id = $1", user_id)
+    query_project_name = db.query("""
+    select
+        id,
+        name
+    from
+        project;
+    """).namedresult()
+    query_skill_name = db.query("""
+    select
+        id,
+        name
+    from
+        skill
+    """).namedresult()
     result_list = query_student.namedresult()
     return render_template(
         "update.html",
         result = result_list[0],
-        user_id = user_id
+        user_id = user_id,
+        query_project_name = query_project_name,
+        query_skill_name = query_skill_name
     )
 
 # Route handler to actually Update User info, queries info in database
@@ -221,6 +237,8 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
+    project = request.form.getlist("project_name")
+    skill = request.form.getlist("skill_name")
 
     db.update(
         "users", {
@@ -233,6 +251,59 @@ def update_entry():
             "bio": bio
             }
         )
+
+    if skill:
+        skill_query = db.query ("""
+        select
+        	skill_id
+        from
+        	users_link_skill
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_skill_list = []
+        add_skill_list = []
+        for i in skill:
+            for entry in skill_query:
+                if int(i) in entry:
+                    not_skill_list.append(int(i))
+                else:
+                    pass
+            add_skill_list.append(int(i))
+            skill_to_add = list(set(add_skill_list)^set(not_skill_list))
+        for r in skill_to_add:
+            db.insert(
+                "users_link_skill",
+                users_id = user_id,
+                skill_id = r
+            )
+
+    if project:
+        project_query = db.query ("""
+        select
+        	project_id
+        from
+        	users_link_project
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_project_list = []
+        add_project_list = []
+        for i in project:
+            for entry in project_query:
+                if int(i) in entry:
+                    not_project_list.append(int(i))
+                else:
+                    pass
+            add_project_list.append(int(i))
+            project_to_add = list(set(add_project_list)^set(not_project_list))
+        for r in project_to_add:
+            db.insert(
+                "users_link_project",
+                users_id = user_id,
+                project_id = r
+            )
+
 
     return redirect('/')
 
@@ -302,7 +373,6 @@ def add_entry():
             name = company_name
         )
         company_query = db.query("select id from company where name = $1", company_name).namedresult()
-        print "this is the company query: %r", company_query
         company_id = company_query[0].id
         db.insert(
             "users_link_company",
@@ -400,7 +470,8 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/profile/%d' % result_list[0])
+                print result_list
+                return redirect('/profile/%d' % result_list[0].id)
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
@@ -515,6 +586,28 @@ def project_profile(id):
         images_information = project_images
     )
 
+@app.route("/skill_profile/<id>")
+def skill_profile(id):
+    skill = db.query("select name from skill where id = $1", id).namedresult()
+    practitioners = db.query("""
+    select
+    	first_name,
+    	last_name
+    from
+    	users,
+    	users_link_skill,
+    	skill
+    where
+    	users.id = users_link_skill.users_id and
+    	users_link_skill.skill_id = skill.id and
+    	skill.id = $1;
+    """, id).namedresult()
+    return render_template(
+        "skill.html",
+        skill = skill[0],
+        practitioners = practitioners
+    )
+
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -566,6 +659,73 @@ def uploaded_file(filename):
 def profile_upload():
     return redirect('/all_students'
         )
+
+@app.route("/new_project")
+def new_project():
+    query_skills = db.query("""
+        select
+        	skill.id,
+        	name
+        from
+        	skill;
+        """)
+    skills_list = query_skills.namedresult()
+    query_users = db.query("""
+        select
+        	users.id,
+        	first_name,
+            last_name,
+            user_type.type
+        from
+        	users,
+        	users_link_type,
+        	user_type
+        where
+        	users_link_type.user_id = users.id and
+        	users_link_type.user_type_id = user_type.id and
+        	user_type.type = 'Student'
+        order by
+	        first_name
+        ;
+        """)
+    users_list = query_users.namedresult()
+    print "Users List: %s \n\n\n" % users_list
+    return render_template (
+        "add_new_project.html",
+        skills = skills_list,
+        developers = users_list
+    )
+
+@app.route("/add_new_project", methods=["POST"])
+def add_new_project():
+    project_name = request.form.get("project_name")
+    web_page = request.form.get("web_page")
+    project_description = request.form.get("project_description")
+    skills = request.form.getlist("skill_id")
+    users = request.form.getlist("user_id")
+    print "\n\nInformation received: %s\n%s\n%s\n%s\n%s\n" % (project_name, web_page, project_description, skills, users)
+    print "\n\nRequest Form: %s \n\n" % request.form
+
+    insert_new_project = db.query("""
+        INSERT INTO project(name, link, description)
+        VALUES
+            ($1, $2, $3)
+        RETURNING id;
+        """, (project_name, web_page, project_description))
+    new_project_id = insert_new_project.namedresult()[0].id
+    for skill in skills:
+        db.insert(
+            "project_link_skill",
+            project_id = new_project_id,
+            skill_id = int(skill)
+        )
+    for user in users:
+        db.insert(
+            "users_link_project",
+            project_id = new_project_id,
+            users_id = int(user)
+        )
+    return redirect("/")
 
 # Route to handle any errors
 @app.errorhandler(404)

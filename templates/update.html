@@ -31,6 +31,28 @@
     <label for="">Short Bio:</label>
     <textarea class="form-control" name="bio" rows="8" cols="40">{{result.bio}}</textarea>
   </div>
+  <div class="form-group">
+    <label for="">Projects</label>
+    {% for entry in query_project_name %}
+    <div class="radio">
+      <label><input type="checkbox" name="project_name" value="{{entry.id}}">
+      {{entry.name}}
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+  <br>
+  <div class="form-group">
+    <label for="">Skills</label>
+    {% for entry in query_skill_name %}
+    <div class="radio">
+      <label><input type="checkbox" name="skill_name" value="{{entry.id}}">
+      {{entry.name}}
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+  <br>
   <button type="submit" class="btn btn-default" >Update Entry</button>
 </form>
 {% endblock %}
