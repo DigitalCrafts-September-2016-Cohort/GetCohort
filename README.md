@@ -26,6 +26,6 @@ PostgreSQL
 ### URL: http://54.148.11.254
 
 ### 3 Contributions We'd Like to See:
-1: Self-made profiles from everyone in the cohort
-2: Different dashboards for different user types
-3: Ability for employer to "favorite" a student
+1. Self-made profiles from everyone in the cohort
+2. Different dashboards for different user types
+3. Ability for employer to "favorite" a student
