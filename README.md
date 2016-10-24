@@ -1,4 +1,4 @@
-Project Description:
+### H3 Project Description:
 GetCohort is a website designed to comprehensively showcase all of the skills and projects that members of a cohort
 have accomplished. By utilizing an easy-to-navigate layout that offers distinct functionality based on the type
 of user viewing the site, GetCohort provides a unique perspective on a cohort and the people that comprise it, from
@@ -6,7 +6,7 @@ students to instructors and everyone in-between. With just a few clicks, potenti
 contact information or links to their other resources like LinkedIn and Github, all through GetCohort.
 
 
-Contributors:
+### H3 Contributors:
 Juan Cortes- Bootstrap, Avatar, login/logout, 404 page, Database, Project Profile
 Matthew Downs- Permissions, Database, Queries, Skills Profile
 Trista McCleary- Comments, login/logout, Database, Landing Page
