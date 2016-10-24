@@ -35,7 +35,7 @@
     <label for="">Projects</label>
     {% for entry in query_project_name %}
     <div class="radio">
-      <label><input type="checkbox" name="project_id" value="{{entry.id}}">
+      <label><input type="checkbox" name="project_name" value="{{entry.id}}">
       {{entry.name}}
       </label>
     </div>
@@ -46,7 +46,7 @@
     <label for="">Skills</label>
     {% for entry in query_skill_name %}
     <div class="radio">
-      <label><input type="checkbox" name="skill_id" value="{{entry.id}}">
+      <label><input type="checkbox" name="skill_name" value="{{entry.id}}">
       {{entry.name}}
       </label>
     </div>

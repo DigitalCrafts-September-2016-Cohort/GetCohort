@@ -236,23 +236,73 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
-    project = request.form.get("project_id")
-    skill = request.form.get("skill_id")
+    project = request.form.getlist("project_name")
+    skill = request.form.getlist("skill_name")
 
-    print project
-    print skill
+    db.update(
+        "users", {
+            "id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "web_page": web_page,
+            "github": github,
+            "bio": bio
+            }
+        )
 
-    # db.update(
-    #     "users", {
-    #         "id": user_id,
-    #         "first_name": first_name,
-    #         "last_name": last_name,
-    #         "email": email,
-    #         "web_page": web_page,
-    #         "github": github,
-    #         "bio": bio
-    #         }
-    #     )
+    if skill:
+        skill_query = db.query ("""
+        select
+        	skill_id
+        from
+        	users_link_skill
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_skill_list = []
+        add_skill_list = []
+        for i in skill:
+            for entry in skill_query:
+                if int(i) in entry:
+                    not_skill_list.append(int(i))
+                else:
+                    pass
+            add_skill_list.append(int(i))
+            skill_to_add = list(set(add_skill_list)^set(not_skill_list))
+        for r in skill_to_add:
+            db.insert(
+                "users_link_skill",
+                users_id = user_id,
+                skill_id = r
+            )
+
+    if project:
+        project_query = db.query ("""
+        select
+        	project_id
+        from
+        	users_link_project
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_project_list = []
+        add_project_list = []
+        for i in project:
+            for entry in project_query:
+                if int(i) in entry:
+                    not_project_list.append(int(i))
+                else:
+                    pass
+            add_project_list.append(int(i))
+            project_to_add = list(set(add_project_list)^set(not_project_list))
+        for r in project_to_add:
+            db.insert(
+                "users_link_project",
+                users_id = user_id,
+                project_id = r
+            )
+
 
     return redirect('/')
 
@@ -322,7 +372,6 @@ def add_entry():
             name = company_name
         )
         company_query = db.query("select id from company where name = $1", company_name).namedresult()
-        print "this is the company query: %r", company_query
         company_id = company_query[0].id
         db.insert(
             "users_link_company",
