@@ -461,6 +461,7 @@ def project_profile(id):
     skills = query_skills.namedresult()
     query_contributors = db.query("""
         select
+            users.id,
             users.first_name,
             users.last_name,
             project.name as project_name,
@@ -476,11 +477,41 @@ def project_profile(id):
             project.id = $1
         ;""", id)
     contributors = query_contributors.namedresult()
+    query_contributors_id = db.query("""
+        select
+            users.id
+        from
+            users,
+            project,
+            users_link_project
+        where
+            users.id = users_link_project.users_id and
+            project.id = users_link_project.project_id and
+            project.id = $1
+        ;""", id)
+    contributors_id = query_contributors_id.namedresult()
+    query_project_images = db.query("""
+        select
+        	project.id as project_id,
+        	image.id as image_id,
+        	image.image,
+            image.description
+        from
+            project,
+            image
+        where
+            project.id = image.project_id and
+            project.id = $1
+        ;
+        """, id)
+    project_images = query_project_images.namedresult()
     return render_template(
         "project_profile.html",
         project = project_list[0],
         skills = skills,
-        contributors = contributors
+        contributors = contributors,
+        contributors_id_list = contributors_id,
+        images_information = project_images
     )
 
 # Route that will process the file upload
@@ -488,7 +519,9 @@ def project_profile(id):
 def upload():
     file_name_size = 64
     user_id = request.form.get("id")
-    # user_id = int(user_id)
+    print "user id %s\n\n\n" % user_id
+    project_id = request.form.get("project_id")
+    print "project id %s\n\n\n" % project_id
     # Get the name of the uploaded file
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
@@ -503,15 +536,20 @@ def upload():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Redirect the user to the uploaded_file route, which
         # will basically show on the browser the uploaded file
-        db.update (
-            "users", {
-                "id": user_id,
-                "avatar": filename
-            }
-        )
-        return redirect('/'
-            # filename=filename
-        )
+        if user_id:
+            db.update (
+                "users", {
+                    "id": user_id,
+                    "avatar": filename
+                }
+            )
+        elif project_id:
+            db.insert (
+                "image",
+                image = filename,
+                project_id = project_id
+            )
+        return redirect('/')
 
 # Route that will process the file upload to a folder and
 # will locate that file on the upload
@@ -527,6 +565,7 @@ def uploaded_file(filename):
 def profile_upload():
     return redirect('/all_students'
         )
+
 # Route to handle any errors
 @app.errorhandler(404)
 def page_not_found(e):

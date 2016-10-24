@@ -110,10 +110,22 @@ a span {
 /*
  * Profile Info Section
  */
+
 .profile-info {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+/*
+ * Project Info Section
+ */
+.project_description {
+   display: block;
+}
+
+.project_information {
+  list-style-type: none;
+  padding-left: -20px;}
 
 /*
  * Icons Section
