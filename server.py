@@ -203,11 +203,27 @@ def update():
     # email = request.form.get("email")
     user_id = request.form.get("id")
     query_student = db.query("select * from users where id = $1", user_id)
+    query_project_name = db.query("""
+    select
+        id,
+        name
+    from
+        project;
+    """).namedresult()
+    query_skill_name = db.query("""
+    select
+        id,
+        name
+    from
+        skill
+    """).namedresult()
     result_list = query_student.namedresult()
     return render_template(
         "update.html",
         result = result_list[0],
-        user_id = user_id
+        user_id = user_id,
+        query_project_name = query_project_name,
+        query_skill_name = query_skill_name
     )
 
 # Route handler to actually Update User info, queries info in database
@@ -220,6 +236,8 @@ def update_entry():
     web_page = request.form.get("web_page")
     github = request.form.get("github")
     bio = request.form.get("bio")
+    project = request.form.getlist("project_name")
+    skill = request.form.getlist("skill_name")
 
     db.update(
         "users", {
@@ -232,6 +250,59 @@ def update_entry():
             "bio": bio
             }
         )
+
+    if skill:
+        skill_query = db.query ("""
+        select
+        	skill_id
+        from
+        	users_link_skill
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_skill_list = []
+        add_skill_list = []
+        for i in skill:
+            for entry in skill_query:
+                if int(i) in entry:
+                    not_skill_list.append(int(i))
+                else:
+                    pass
+            add_skill_list.append(int(i))
+            skill_to_add = list(set(add_skill_list)^set(not_skill_list))
+        for r in skill_to_add:
+            db.insert(
+                "users_link_skill",
+                users_id = user_id,
+                skill_id = r
+            )
+
+    if project:
+        project_query = db.query ("""
+        select
+        	project_id
+        from
+        	users_link_project
+        where
+        	users_id = $1;
+        """, user_id).namedresult()
+        not_project_list = []
+        add_project_list = []
+        for i in project:
+            for entry in project_query:
+                if int(i) in entry:
+                    not_project_list.append(int(i))
+                else:
+                    pass
+            add_project_list.append(int(i))
+            project_to_add = list(set(add_project_list)^set(not_project_list))
+        for r in project_to_add:
+            db.insert(
+                "users_link_project",
+                users_id = user_id,
+                project_id = r
+            )
+
 
     return redirect('/')
 
@@ -301,7 +372,6 @@ def add_entry():
             name = company_name
         )
         company_query = db.query("select id from company where name = $1", company_name).namedresult()
-        print "this is the company query: %r", company_query
         company_id = company_query[0].id
         db.insert(
             "users_link_company",
@@ -399,7 +469,8 @@ def search_user():
             query = db.query("select * from users where (first_name ilike $1 or last_name ilike $2)", (first_name_to_search, last_name_to_search))
             result_list = query.namedresult()
             if len(result_list) == 1:
-                return redirect('/profile/%d' % result_list[0])
+                print result_list
+                return redirect('/profile/%d' % result_list[0].id)
             elif len(result_list) >= 2:
                 return render_template(
                     "disambiguation.html",
