@@ -7,9 +7,9 @@ contact information or links to their other resources like LinkedIn and Github, 
 
 
 Contributors:
-Juan Cortes- Bootstrap, Avatar, login/logout, 404 page, Database
-Matthew Downs- Permissions, Database, Queries
-Trista McCleary- Comments, login/logout, Database
+Juan Cortes- Bootstrap, Avatar, login/logout, 404 page, Database, Project Profile
+Matthew Downs- Permissions, Database, Queries, Skills Profile
+Trista McCleary- Comments, login/logout, Database, Landing Page
 Kevin Farmer- Search bar, Permissions, Database, Readme
 
 Technologies:
@@ -23,9 +23,9 @@ Screenshots:
 ![matt profile page](/static/images/mattprofile.png)
 ![code screenshot](/static/images/code.png)
 
-URL:
+URL: http://54.148.11.254
 
 3 Contributions We'd Like to See:
 1: Self-made profiles from everyone in the cohort
-2:
-3:
+2: Different dashboards for different user types
+3: Ability for employer to "favorite" a student
