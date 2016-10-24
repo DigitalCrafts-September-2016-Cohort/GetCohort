@@ -20,7 +20,7 @@
     <ul>
       {% for skill in skills %}
       <li>
-        {{skill.skill_name}}
+        <a href="/skill_profile/{{skill.skill_id}}">{{skill.skill_name}}</a>
       </li>
       {% endfor %}
     </ul>
