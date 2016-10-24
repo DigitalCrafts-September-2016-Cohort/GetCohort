@@ -72,13 +72,14 @@
         <br>
         <input class="btn btn-default" type="submit" value="Upload">
         <hr>
+        {% endif %}
+      </form>
+      {% if session['id'] == user.id %}
         <!--Submit button for adding a new project -->
         <form class="" action="/new_project" method="">
           <button class="btn btn-default" type="submit" name="button_add_new_project">Add New Project</button>
         </form>
-        {% endif %}
-      </form>
-
+      {% endif %}
 
     </div>
 
