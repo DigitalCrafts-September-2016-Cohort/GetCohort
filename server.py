@@ -100,14 +100,6 @@ def home():
             "index_landing.html"
         )
 
-# Route might not be needed. Will delete later
-# @app.route('/profile')
-# def student_profile_login():
-#     name = request.form.get('name')
-#
-#     return redirect('/layout.html')
-
-
 # Route for All Students page to generate data based on query request
 @app.route('/all_students', methods=["POST", "GET"])
 def all_students():
@@ -412,6 +404,7 @@ def add_entry():
             pass
 
     return redirect("/all_students")
+
 # this route will allow user to login to site and their account
 @app.route("/submit_login", methods=["POST"])
 def submit_login():
@@ -598,7 +591,8 @@ def skill_profile(id):
     practitioners = db.query("""
     select
     	first_name,
-    	last_name
+    	last_name,
+        users.id
     from
     	users,
     	users_link_skill,
