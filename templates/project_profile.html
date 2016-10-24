@@ -46,27 +46,43 @@
       <!-- GRID View of images for a particular project-->
       <div class="col-md-4 cf">
         <img class="avatar" src="/static/images/{{item.image}}" />
-        <span class="project_description text-center">{{item.description}}</span>
+        {% if item.description %}
+          <span class="project_description text-center">{{item.description}}</span>
+        {% endif %}
       </div>
     {% endfor %}
-    <br>
-    <br>
-    {% for ids in contributors_id_list %}
-      {% for id in ids %}
-        {% if session['id'] in ids %}
-          <hr>
-          <h4>Upload Project Images</h4>
-          <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="project_id" value="{{project.id}}">
-            <input type="file" name="file">
-            <br>
-            <input class="btn btn-default" type="submit" value="Upload">
-          </form>
-        {% endif %}
-      {% endfor %}
-    {% endfor %}
+
   </div>
   <!-- column two -->
+
+  <div class="row">
+    <div class="col-xs-2">
+
+    </div>
+    <div class="col-xs-8">
+      <br>
+      <br>
+      <br>
+      {% for ids in contributors_id_list %}
+        {% for id in ids %}
+          {% if session['id'] in ids %}
+            <hr>
+            <h3>Upload Project Images</h3>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="project_id" value="{{project.id}}">
+              <input type="file" name="file">
+              <br>
+              <input class="btn btn-default" type="submit" value="Upload">
+            </form>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+    <div class="col-xs-2">
+
+    </div>
+  </div>
+  <!-- /.row -->
 
 </div>
 

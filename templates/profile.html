@@ -62,22 +62,24 @@
       </form>
       <br>
       <br>
-      <hr>
-      <h4>Upload Avatar</h4>
+
       <form action="/upload" method="post" enctype="multipart/form-data">
         {% if session['id'] == user.id %}
+        <hr>
+        <h4>Upload Avatar</h4>
         <input type="hidden" name="id" value="{{user.id}}">
         <input type="file" name="file">
         <br>
         <input class="btn btn-default" type="submit" value="Upload">
+        <hr>
+        <!--Submit button for adding a new project -->
+        <form class="" action="/new_project" method="">
+          <button class="btn btn-default" type="submit" name="button_add_new_project">Add New Project</button>
+        </form>
         {% endif %}
       </form>
 
-      <hr>
-      <!--Submit button for adding a new project -->
-      <form class="" action="/new_project" method="">
-        <button class="btn btn-default" type="submit" name="button_add_new_project">Add New Project</button>
-      </form>
+
     </div>
 
     <!-- column two -->
