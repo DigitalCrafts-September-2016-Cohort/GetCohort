@@ -566,6 +566,73 @@ def profile_upload():
     return redirect('/all_students'
         )
 
+@app.route("/new_project")
+def new_project():
+    query_skills = db.query("""
+        select
+        	skill.id,
+        	name
+        from
+        	skill;
+        """)
+    skills_list = query_skills.namedresult()
+    query_users = db.query("""
+        select
+        	users.id,
+        	first_name,
+            last_name,
+            user_type.type
+        from
+        	users,
+        	users_link_type,
+        	user_type
+        where
+        	users_link_type.user_id = users.id and
+        	users_link_type.user_type_id = user_type.id and
+        	user_type.type = 'Student'
+        order by
+	        first_name
+        ;
+        """)
+    users_list = query_users.namedresult()
+    print "Users List: %s \n\n\n" % users_list
+    return render_template (
+        "add_new_project.html",
+        skills = skills_list,
+        developers = users_list
+    )
+
+@app.route("/add_new_project", methods=["POST"])
+def add_new_project():
+    project_name = request.form.get("project_name")
+    web_page = request.form.get("web_page")
+    project_description = request.form.get("project_description")
+    skills = request.form.getlist("skill_id")
+    users = request.form.getlist("user_id")
+    print "\n\nInformation received: %s\n%s\n%s\n%s\n%s\n" % (project_name, web_page, project_description, skills, users)
+    print "\n\nRequest Form: %s \n\n" % request.form
+
+    insert_new_project = db.query("""
+        INSERT INTO project(name, link, description)
+        VALUES
+            ($1, $2, $3)
+        RETURNING id;
+        """, (project_name, web_page, project_description))
+    new_project_id = insert_new_project.namedresult()[0].id
+    for skill in skills:
+        db.insert(
+            "project_link_skill",
+            project_id = new_project_id,
+            skill_id = int(skill)
+        )
+    for user in users:
+        db.insert(
+            "users_link_project",
+            project_id = new_project_id,
+            users_id = int(user)
+        )
+    return redirect("/")
+
 # Route to handle any errors
 @app.errorhandler(404)
 def page_not_found(e):

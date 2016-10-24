@@ -6,13 +6,14 @@
 <!-- Header -->
 
 <div class="row">
-  <div class="col-xs-1">
+  <div class="col-xs-2">
 
   </div>
-  <div class="col-xs-10">
+  <div class="col-xs-8">
     <!-- Form
     Here's the bulk of the add_entry from. These fields will supply information to the users table in the database.-->
-    <p>Who would you like to add?</p>
+    <h3>Who would you like to add?</h3>
+    <hr>
     <form class="form-horizontal" action="/add_entry" method="post">
       <div class="form-group">
         <label for="">First Name:</label>
@@ -91,9 +92,9 @@
       <button class="btn btn-default" type="submit" name="button_create_entry">Create Entry</button>
     </form>
   </div>
-</div>
-<div class="col-xs-1">
+  <div class="col-xs-2">
 
+  </div>
 </div>
 
 {% endblock %}
