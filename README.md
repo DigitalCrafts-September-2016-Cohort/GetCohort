@@ -8,13 +8,13 @@ contact information or links to their other resources like LinkedIn and Github, 
 
 
 ## Contributors:
-* Juan Cortes:
+* [Juan Cortes](https://github.com/jcortes0309)
   * Bootstrap, Avatar, login/logout, 404 page, Database, Project Profile
-* Matthew Downs:
+* [Matthew Downs](https://github.com/mwdowns)
   * Permissions, Database, Queries, Skills Profile
-* Trista McCleary:
+* [Trista McCleary](https://github.com/mccleary)
   * Code comments, login/logout, Database, Landing Page
-* Kevin Farmer:
+* [Kevin Farmer](https://github.com/KFarm93)
   * Search bar, Permissions, Database, README file
 
 ## Technologies Used:
@@ -24,10 +24,11 @@ contact information or links to their other resources like LinkedIn and Github, 
 * PostgreSQL
 
 ## Screenshots:
+##### Front Page
 ![front page](/static/images/frontpage.png)
-
+##### Student Profile Page
 ![matt profile page](/static/images/mattprofile.png)
-
+##### Example Code
 ![code screenshot](/static/images/code.png)
 
 URL: http://54.148.11.254

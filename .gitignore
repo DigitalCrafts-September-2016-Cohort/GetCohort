@@ -1,3 +1,5 @@
 .env
 *.pyc
 *.dump
+*.DS_Store
+/static/*.DS_Store
